@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1",
+    "name": "Accessories",
+    "description": "Phone cases, chargers, and mobile accessories",
+    "image": "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=500&h=500&fit=crop&crop=center&auto=format&q=80",
+    "slug": "accessories",
+    "productCount": 45,
+    "isActive": true,
+    "sortOrder": 1,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "2",
+    "name": "Camera",
+    "description": "Digital cameras, lenses, and photography equipment",
+    "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&h=500&fit=crop&crop=center&auto=format&q=80",
+    "slug": "camera",
+    "productCount": 32,
+    "isActive": true,
+    "sortOrder": 2,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "3",
+    "name": "Laptop",
+    "description": "Laptops, notebooks, and portable computers",
+    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=500&fit=crop&crop=center&auto=format&q=80",
+    "slug": "laptop",
+    "productCount": 28,
+    "isActive": true,
+    "sortOrder": 3,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "4",
+    "name": "Smart Phone",
+    "description": "Latest smartphones and mobile devices",
+    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&h=500&fit=crop&crop=center&auto=format&q=80",
+    "slug": "smart-phone",
+    "productCount": 67,
+    "isActive": true,
+    "sortOrder": 4,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "5",
+    "name": "Gaming",
+    "description": "Gaming consoles, controllers, and accessories",
+    "image": "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=500&h=500&fit=crop&crop=center&auto=format&q=80",
+    "slug": "gaming",
+    "productCount": 41,
+    "isActive": true,
+    "sortOrder": 5,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "6",
+    "name": "Smart Watch",
+    "description": "Smartwatches, fitness trackers, and wearables",
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop&crop=center&auto=format&q=80",
+    "slug": "smart-watch",
+    "productCount": 23,
+    "isActive": true,
+    "sortOrder": 6,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  }
+]
