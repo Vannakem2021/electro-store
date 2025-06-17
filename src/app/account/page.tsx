@@ -20,36 +20,83 @@ const AccountPage: React.FC = () => {
   });
 
   const handleNotificationToggle = (key: keyof NotificationSettings) => {
-    setNotifications(prev => ({
+    setNotifications((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }));
   };
 
   const sidebarItems = [
-    { icon: "👤", label: "Personal Data", href: "/account/personal", active: false },
-    { icon: "💳", label: "Payment & Installments", href: "/account/payment", active: false },
+    {
+      icon: "👤",
+      label: "Personal Data",
+      href: "/account/personal",
+      active: false,
+    },
+    {
+      icon: "💳",
+      label: "Payment & Installments",
+      href: "/account/payment",
+      active: false,
+    },
     { icon: "📦", label: "Orders", href: "/account/orders", active: false },
-    { icon: "❤️", label: "Wish list", href: "/account/wishlist", active: false },
-    { icon: "🏷️", label: "Discounts", href: "/account/discounts", active: false },
-    { icon: "🔒", label: "Security & access", href: "/account/security", active: false },
-    { icon: "🔔", label: "Notification", href: "/account/notification", active: true },
-    { icon: "📞", label: "Contact us", href: "/account/contact", active: false },
-    { icon: "🚪", label: "Log out", href: "/logout", active: false, isLogout: true },
+    {
+      icon: "❤️",
+      label: "Wish list",
+      href: "/account/wishlist",
+      active: false,
+    },
+    {
+      icon: "🏷️",
+      label: "Discounts",
+      href: "/account/discounts",
+      active: false,
+    },
+    {
+      icon: "🔒",
+      label: "Security & access",
+      href: "/account/security",
+      active: false,
+    },
+    {
+      icon: "🔔",
+      label: "Notification",
+      href: "/account/notification",
+      active: true,
+    },
+    {
+      icon: "📞",
+      label: "Contact us",
+      href: "/account/contact",
+      active: false,
+    },
+    {
+      icon: "🚪",
+      label: "Log out",
+      href: "/logout",
+      active: false,
+      isLogout: true,
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm mb-8 font-poppins">
-          <Link href="/" className="text-gray-600 hover:text-blue-800 transition-colors duration-200">
+          <Link
+            href="/"
+            className="text-gray-600 hover:text-blue-800 transition-colors duration-200"
+          >
             Home
           </Link>
           <span className="text-gray-400">›</span>
-          <Link href="/account" className="text-gray-600 hover:text-blue-800 transition-colors duration-200">
+          <Link
+            href="/account"
+            className="text-gray-600 hover:text-blue-800 transition-colors duration-200"
+          >
             Account
           </Link>
           <span className="text-gray-400">›</span>
@@ -67,7 +114,9 @@ const AccountPage: React.FC = () => {
                     <span className="text-gray-600 text-xl">👤</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 font-poppins">Ayman ahmed</h3>
+                    <h3 className="font-semibold text-gray-900 font-poppins">
+                      Ayman ahmed
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -99,8 +148,12 @@ const AccountPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-lg border-2 border-gray-200 p-8">
               {/* Header */}
               <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900 font-poppins mb-2">Notification</h1>
-                <p className="text-gray-600 font-poppins">Manage your notification settings</p>
+                <h1 className="text-2xl font-bold text-gray-900 font-poppins mb-2">
+                  Notification
+                </h1>
+                <p className="text-gray-600 font-poppins">
+                  Manage your notification settings
+                </p>
               </div>
 
               {/* Notification Settings */}
@@ -112,9 +165,12 @@ const AccountPage: React.FC = () => {
                       <span className="text-blue-800 text-lg">📧</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 font-poppins">Emails</h3>
+                      <h3 className="font-semibold text-gray-900 font-poppins">
+                        Emails
+                      </h3>
                       <p className="text-sm text-gray-600 font-poppins">
-                        We send emails to let you know what's important, like new orders, confirmations, and more.
+                        We send emails to let you know what&apos;s important,
+                        like new orders, confirmations, and more.
                       </p>
                     </div>
                   </div>
@@ -122,7 +178,7 @@ const AccountPage: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={notifications.emails}
-                      onChange={() => handleNotificationToggle('emails')}
+                      onChange={() => handleNotificationToggle("emails")}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -136,9 +192,12 @@ const AccountPage: React.FC = () => {
                       <span className="text-green-800 text-lg">📱</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 font-poppins">Push to your Device</h3>
+                      <h3 className="font-semibold text-gray-900 font-poppins">
+                        Push to your Device
+                      </h3>
                       <p className="text-sm text-gray-600 font-poppins">
-                        Receive notifications about important updates, promotions and other updates.
+                        Receive notifications about important updates,
+                        promotions and other updates.
                       </p>
                     </div>
                   </div>
@@ -146,7 +205,7 @@ const AccountPage: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={notifications.pushToDevice}
-                      onChange={() => handleNotificationToggle('pushToDevice')}
+                      onChange={() => handleNotificationToggle("pushToDevice")}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -160,7 +219,9 @@ const AccountPage: React.FC = () => {
                       <span className="text-orange-800 text-lg">📦</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 font-poppins">Order Delivered</h3>
+                      <h3 className="font-semibold text-gray-900 font-poppins">
+                        Order Delivered
+                      </h3>
                       <p className="text-sm text-gray-600 font-poppins">
                         You will be notified once the order is delivered.
                       </p>
@@ -170,7 +231,9 @@ const AccountPage: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={notifications.orderDelivered}
-                      onChange={() => handleNotificationToggle('orderDelivered')}
+                      onChange={() =>
+                        handleNotificationToggle("orderDelivered")
+                      }
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -184,9 +247,12 @@ const AccountPage: React.FC = () => {
                       <span className="text-purple-800 text-lg">🛍️</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 font-poppins">Product's availability</h3>
+                      <h3 className="font-semibold text-gray-900 font-poppins">
+                        Product&apos;s availability
+                      </h3>
                       <p className="text-sm text-gray-600 font-poppins">
-                        You will be notified when out of stock products gets available again.
+                        You will be notified when out of stock products gets
+                        available again.
                       </p>
                     </div>
                   </div>
@@ -194,7 +260,9 @@ const AccountPage: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={notifications.productAvailability}
-                      onChange={() => handleNotificationToggle('productAvailability')}
+                      onChange={() =>
+                        handleNotificationToggle("productAvailability")
+                      }
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>

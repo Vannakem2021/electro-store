@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Navbar } from "@/components";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 
 interface Order {
@@ -30,9 +31,10 @@ const OrdersPage: React.FC = () => {
           name: "Wireless Bluetooth Headphones",
           quantity: 1,
           price: 299.99,
-          image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop"
-        }
-      ]
+          image:
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop",
+        },
+      ],
     },
     {
       id: "ORD-2024-002",
@@ -44,15 +46,17 @@ const OrdersPage: React.FC = () => {
           name: "Smart Watch Series 8",
           quantity: 1,
           price: 399.99,
-          image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop"
+          image:
+            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop",
         },
         {
           name: "Wireless Charger",
           quantity: 1,
           price: 199.99,
-          image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=100&h=100&fit=crop"
-        }
-      ]
+          image:
+            "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=100&h=100&fit=crop",
+        },
+      ],
     },
     {
       id: "ORD-2024-003",
@@ -64,10 +68,11 @@ const OrdersPage: React.FC = () => {
           name: "4K Action Camera",
           quantity: 1,
           price: 1299.99,
-          image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=100&h=100&fit=crop"
-        }
-      ]
-    }
+          image:
+            "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=100&h=100&fit=crop",
+        },
+      ],
+    },
   ]);
 
   const getStatusColor = (status: string) => {
@@ -86,29 +91,71 @@ const OrdersPage: React.FC = () => {
   };
 
   const sidebarItems = [
-    { icon: "👤", label: "Personal Data", href: "/account/personal", active: false },
-    { icon: "💳", label: "Payment & Installments", href: "/account/payment", active: false },
+    {
+      icon: "👤",
+      label: "Personal Data",
+      href: "/account/personal",
+      active: false,
+    },
+    {
+      icon: "💳",
+      label: "Payment & Installments",
+      href: "/account/payment",
+      active: false,
+    },
     { icon: "📦", label: "Orders", href: "/account/orders", active: true },
-    { icon: "❤️", label: "Wish list", href: "/account/wishlist", active: false },
-    { icon: "🏷️", label: "Discounts", href: "/account/discounts", active: false },
-    { icon: "🔒", label: "Security & access", href: "/account/security", active: false },
+    {
+      icon: "❤️",
+      label: "Wish list",
+      href: "/account/wishlist",
+      active: false,
+    },
+    {
+      icon: "🏷️",
+      label: "Discounts",
+      href: "/account/discounts",
+      active: false,
+    },
+    {
+      icon: "🔒",
+      label: "Security & access",
+      href: "/account/security",
+      active: false,
+    },
     { icon: "🔔", label: "Notification", href: "/account", active: false },
-    { icon: "📞", label: "Contact us", href: "/account/contact", active: false },
-    { icon: "🚪", label: "Log out", href: "/logout", active: false, isLogout: true },
+    {
+      icon: "📞",
+      label: "Contact us",
+      href: "/account/contact",
+      active: false,
+    },
+    {
+      icon: "🚪",
+      label: "Log out",
+      href: "/logout",
+      active: false,
+      isLogout: true,
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm mb-8 font-poppins">
-          <Link href="/" className="text-gray-600 hover:text-blue-800 transition-colors duration-200">
+          <Link
+            href="/"
+            className="text-gray-600 hover:text-blue-800 transition-colors duration-200"
+          >
             Home
           </Link>
           <span className="text-gray-400">›</span>
-          <Link href="/account" className="text-gray-600 hover:text-blue-800 transition-colors duration-200">
+          <Link
+            href="/account"
+            className="text-gray-600 hover:text-blue-800 transition-colors duration-200"
+          >
             Account
           </Link>
           <span className="text-gray-400">›</span>
@@ -126,7 +173,9 @@ const OrdersPage: React.FC = () => {
                     <span className="text-gray-600 text-xl">👤</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 font-poppins">Ayman ahmed</h3>
+                    <h3 className="font-semibold text-gray-900 font-poppins">
+                      Ayman ahmed
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -158,25 +207,39 @@ const OrdersPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-lg border-2 border-gray-200 p-8">
               {/* Header */}
               <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900 font-poppins mb-2">Orders</h1>
-                <p className="text-gray-600 font-poppins">Track and manage your orders</p>
+                <h1 className="text-2xl font-bold text-gray-900 font-poppins mb-2">
+                  Orders
+                </h1>
+                <p className="text-gray-600 font-poppins">
+                  Track and manage your orders
+                </p>
               </div>
 
               {/* Orders List */}
               <div className="space-y-6">
                 {orders.map((order) => (
-                  <div key={order.id} className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors duration-200">
+                  <div
+                    key={order.id}
+                    className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors duration-200"
+                  >
                     {/* Order Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                       <div className="mb-2 sm:mb-0">
-                        <h3 className="font-semibold text-gray-900 font-poppins">Order {order.id}</h3>
+                        <h3 className="font-semibold text-gray-900 font-poppins">
+                          Order {order.id}
+                        </h3>
                         <p className="text-sm text-gray-600 font-poppins">
                           Placed on {new Date(order.date).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="flex items-center space-x-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold font-poppins ${getStatusColor(order.status)}`}>
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold font-poppins ${getStatusColor(
+                            order.status
+                          )}`}
+                        >
+                          {order.status.charAt(0).toUpperCase() +
+                            order.status.slice(1)}
                         </span>
                         <span className="font-bold text-gray-900 font-poppins">
                           ${order.total.toFixed(2)}
@@ -187,16 +250,24 @@ const OrdersPage: React.FC = () => {
                     {/* Order Items */}
                     <div className="space-y-3 mb-4">
                       {order.items.map((item, index) => (
-                        <div key={index} className="flex items-center space-x-4">
-                          <img
+                        <div
+                          key={index}
+                          className="flex items-center space-x-4"
+                        >
+                          <Image
                             src={item.image}
                             alt={item.name}
+                            width={64}
+                            height={64}
                             className="w-16 h-16 object-cover rounded-lg"
                           />
                           <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 font-poppins">{item.name}</h4>
+                            <h4 className="font-medium text-gray-900 font-poppins">
+                              {item.name}
+                            </h4>
                             <p className="text-sm text-gray-600 font-poppins">
-                              Quantity: {item.quantity} × ${item.price.toFixed(2)}
+                              Quantity: {item.quantity} × $
+                              {item.price.toFixed(2)}
                             </p>
                           </div>
                         </div>
@@ -230,7 +301,8 @@ const OrdersPage: React.FC = () => {
                           Cancel Order
                         </Button>
                       )}
-                      {(order.status === "shipped" || order.status === "processing") && (
+                      {(order.status === "shipped" ||
+                        order.status === "processing") && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -250,7 +322,9 @@ const OrdersPage: React.FC = () => {
                   <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-gray-400 text-3xl">📦</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 font-poppins mb-2">No orders yet</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 font-poppins mb-2">
+                    No orders yet
+                  </h3>
                   <p className="text-gray-600 font-poppins mb-6">
                     When you place your first order, it will appear here.
                   </p>

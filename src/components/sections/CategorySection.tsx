@@ -1,17 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { categories } from "@/data";
 import { CategoryCard } from "@/components/ui";
 import { Category } from "@/types";
 
 const CategorySection: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
-
   const handleCategoryClick = (category: Category) => {
-    setSelectedCategory(category);
     // Here you would typically navigate to the category page
     console.log("Selected category:", category);
   };
@@ -26,7 +21,7 @@ const CategorySection: React.FC = () => {
           </h2>
           <p className="text-gray-800 max-w-2xl mx-auto font-poppins leading-relaxed text-lg font-medium">
             Discover our wide range of electronic products organized by
-            categories. Find exactly what you're looking for with ease.
+            categories. Find exactly what you&apos;re looking for with ease.
           </p>
 
           {/* Decorative line */}

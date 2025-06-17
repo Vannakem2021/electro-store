@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { products, categories } from "@/data";
-import { Product, Category } from "@/types";
+import { Product } from "@/types";
 import { Navbar, Footer } from "@/components";
 import { ProductCard, Button } from "@/components/ui";
 
@@ -26,7 +26,6 @@ type SortOption =
   | "name";
 
 const ProductsPage: React.FC = () => {
-  const [cart, setCart] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const [sortBy, setSortBy] = useState<SortOption>("featured");
   const [showFilters, setShowFilters] = useState(false);
@@ -129,11 +128,14 @@ const ProductsPage: React.FC = () => {
   }, [filters, sortBy]);
 
   const handleAddToCart = (product: Product) => {
-    setCart((prev) => [...prev, product]);
     console.log("Added to cart:", product);
+    // Handle add to cart logic here
   };
 
-  const handleFilterChange = (key: keyof FilterState, value: any) => {
+  const handleFilterChange = (
+    key: keyof FilterState,
+    value: FilterState[keyof FilterState]
+  ) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,

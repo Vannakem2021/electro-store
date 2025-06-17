@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { getBestSellerProducts } from "@/data";
 import { ProductCard } from "@/components/ui";
 import { Product } from "@/types";
 
 const BestSellerSection: React.FC = () => {
-  const [cart, setCart] = useState<Product[]>([]);
   const bestSellerProducts = getBestSellerProducts();
 
   const handleAddToCart = (product: Product) => {
-    setCart((prev) => [...prev, product]);
     // Here you would typically update a global cart state or call an API
     console.log("Added to cart:", product);
     // You could show a toast notification here

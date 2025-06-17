@@ -379,7 +379,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
               ].map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
+                  onClick={() =>
+                    setActiveTab(
+                      tab.key as "description" | "specifications" | "reviews"
+                    )
+                  }
                   className={`py-4 px-2 font-mono font-semibold text-sm tracking-wide transition-all duration-300 ease-in-out border-b-2 ${
                     activeTab === tab.key
                       ? "border-blue-700 text-blue-700"
@@ -405,7 +409,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                   <div className="space-y-4">
                     <h4 className="text-lg font-bold text-gray-900 font-mono">
-                      What's Included
+                      What&apos;s Included
                     </h4>
                     <ul className="space-y-2">
                       <li className="flex items-center gap-3">

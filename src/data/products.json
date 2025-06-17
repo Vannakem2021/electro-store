@@ -88,6 +88,7 @@
     "isBestSeller": true,
     "isFeatured": true,
     "tags": ["gaming", "console", "playstation"],
+    "specifications": {},
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
   },
@@ -108,6 +109,7 @@
     "stockCount": 45,
     "isBestSeller": true,
     "tags": ["airpods", "wireless", "apple"],
+    "specifications": {},
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
   },
@@ -163,6 +165,7 @@
     "stockCount": 5,
     "isFeatured": true,
     "tags": ["camera", "mirrorless", "professional"],
+    "specifications": {},
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
   },
@@ -183,6 +186,7 @@
     "stockCount": 28,
     "isBestSeller": true,
     "tags": ["smartwatch", "apple", "fitness"],
+    "specifications": {},
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
   },
@@ -201,6 +205,7 @@
     "stockCount": 18,
     "isFeatured": true,
     "tags": ["samsung", "android", "smartphone"],
+    "specifications": {},
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
   }

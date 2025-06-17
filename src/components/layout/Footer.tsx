@@ -12,8 +12,8 @@ const Footer: React.FC = () => {
             <h3 className="text-2xl font-bold mb-4 font-poppins">Elecxo</h3>
             <p className="text-blue-200 mb-4 text-sm leading-relaxed font-poppins">
               Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since.
+              industry. Lorem Ipsum has been the industry&apos;s standard dummy
+              text ever since.
             </p>
 
             {/* Payment Methods */}

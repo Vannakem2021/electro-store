@@ -17,7 +17,6 @@ interface CategoryPageProps {
 const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
   const [category, setCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
     const loadCategory = async () => {
@@ -36,8 +35,8 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
   }, [params]);
 
   const handleAddToCart = (product: Product) => {
-    setCart((prev) => [...prev, product]);
     console.log("Added to cart:", product);
+    // Handle add to cart logic here
   };
 
   if (!category) {
