@@ -5,24 +5,24 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import { getBestSellerProducts } from "@/data";
-import { ProductCard, SkeletonCard } from "@/components/ui";
+import { getNewProducts } from "@/data";
+import { SpecialProductCard, SkeletonCard } from "@/components/ui";
 import { Product } from "@/types";
 
-const BestSellerSection: React.FC = () => {
+const NewProductsSection: React.FC = () => {
   const { t } = useTranslation();
   const { isKhmer } = useLanguage();
   const { addToCart } = useCart();
-  const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadProducts = async () => {
       setIsLoading(true);
       // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      const products = getBestSellerProducts();
-      setBestSellerProducts(products);
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const products = getNewProducts().slice(0, 4); // Show only 4 products
+      setNewProducts(products);
       setIsLoading(false);
     };
 
@@ -45,23 +45,23 @@ const BestSellerSection: React.FC = () => {
                   isKhmer ? "font-khmer" : "font-rubik"
                 }`}
               >
-                {t("sections.bestsellers.title")}
+                {t("sections.new.title")}
               </h2>
               <p
                 className={`text-gray-600 text-sm ${
                   isKhmer ? "font-khmer" : "font-rubik"
                 }`}
               >
-                {t("sections.bestsellers.description")}
+                {t("sections.new.description")}
               </p>
             </div>
             <Link
-              href="/products?filter=bestseller"
+              href="/products?filter=new"
               className={`text-teal-800 hover:text-teal-900 font-medium text-sm transition-colors duration-200 flex items-center gap-1 group ${
                 isKhmer ? "font-khmer" : "font-rubik"
               }`}
             >
-              {t("sections.bestsellers.viewAll")}
+              {t("sections.new.viewAll")}
               <svg
                 className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
                 fill="none"
@@ -80,29 +80,40 @@ const BestSellerSection: React.FC = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
-          {isLoading
-            ? // Show skeleton loading
-              Array.from({ length: 8 }).map((_, index) => (
-                <SkeletonCard key={index} variant="default" />
-              ))
-            : bestSellerProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                  showLink={true}
-                />
-              ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {isLoading ? (
+            // Show skeleton loading
+            Array.from({ length: 4 }).map((_, index) => (
+              <SkeletonCard key={index} variant="special" />
+            ))
+          ) : newProducts.length > 0 ? (
+            newProducts.map((product) => (
+              <SpecialProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+                variant="new"
+                showLink={true}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-600 font-rubik text-sm">
+                No new products available
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Mobile More Products Link */}
+        {/* Mobile View All Link */}
         <div className="text-center mt-8 md:hidden">
           <Link
-            href="/products?filter=bestseller"
-            className="inline-flex items-center text-teal-700 hover:text-teal-800 font-rubik font-medium transition-colors duration-200 group"
+            href="/products?filter=new"
+            className={`inline-flex items-center text-teal-800 hover:text-teal-900 font-medium transition-colors duration-200 group ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
           >
-            View All Best Sellers
+            {t("product.viewAllNew")}
             <svg
               className="w-4 h-4 ml-1 transform transition-transform duration-200 group-hover:translate-x-1"
               fill="none"
@@ -123,4 +134,4 @@ const BestSellerSection: React.FC = () => {
   );
 };
 
-export default BestSellerSection;
+export default NewProductsSection;

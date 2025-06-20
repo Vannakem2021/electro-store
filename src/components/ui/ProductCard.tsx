@@ -1,109 +1,207 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { Product } from "@/types";
 import { formatPrice, truncateText } from "@/lib/utils";
-import Button from "./Button";
+import { ShoppingBagIcon, HeartIcon, LoaderIcon } from "@/components/ui";
 
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
+  showLink?: boolean; // Optional prop to control whether to show link or not
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
-  const handleAddToCart = () => {
-    if (onAddToCart) {
-      onAddToCart(product);
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onAddToCart,
+  showLink = true,
+}) => {
+  const { t } = useTranslation();
+  const { isKhmer } = useLanguage();
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking add to cart
+    e.stopPropagation(); // Stop event bubbling
+
+    if (isAddingToCart) return; // Prevent multiple clicks
+
+    setIsAddingToCart(true);
+
+    try {
+      if (onAddToCart) {
+        // When onAddToCart is provided, let the parent handle the operation and toasts
+        onAddToCart(product);
+        // Simulate async operation for better UX
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      } else {
+        // Use cart context as fallback (this will show its own toast)
+        addToCart(product, 1);
+        // Simulate async operation for better UX
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <span
-        key={i}
-        className={`text-sm ${
-          i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"
-        }`}
-      >
-        ★
-      </span>
-    ));
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking wishlist
+    e.stopPropagation(); // Stop event bubbling
+
+    if (isTogglingWishlist) return; // Prevent multiple clicks
+
+    setIsTogglingWishlist(true);
+
+    try {
+      if (isInWishlist(product.id)) {
+        removeFromWishlist(product.id);
+      } else {
+        addToWishlist(product);
+      }
+      // Simulate async operation for better UX
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    } finally {
+      setIsTogglingWishlist(false);
+    }
   };
 
-  return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl border-2 border-gray-300 hover:border-blue-500 transition-all duration-300 ease-in-out overflow-hidden group transform hover:-translate-y-2 hover:scale-105 active:scale-95 cursor-pointer">
+  const cardContent = (
+    <div className="bg-white rounded-md shadow-md overflow-hidden group cursor-pointer transition-all duration-300 ease-in-out hover:shadow-xl h-full flex flex-col">
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
         <Image
           src={product.image}
           alt={product.name}
           fill
-          className="object-cover group-hover:scale-110 transition-all duration-500 ease-in-out"
+          className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out"></div>
 
-        {product.isBestSeller && (
-          <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 text-xs font-bold rounded-lg shadow-lg font-poppins tracking-wide transform transition-all duration-300 ease-in-out hover:scale-110">
-            BEST SELLER
-          </div>
-        )}
+        {/* Badges */}
+        {/* Wishlist Icon - Replaces discount percentage */}
+        <button
+          onClick={handleWishlistToggle}
+          disabled={isTogglingWishlist}
+          className={`absolute top-3 left-3 w-8 h-8 backdrop-blur-sm rounded-lg transition-all duration-200 ease-in-out flex items-center justify-center group/heart shadow-sm disabled:cursor-not-allowed ${
+            isInWishlist(product.id)
+              ? "bg-red-50 text-red-500 hover:bg-red-100"
+              : "bg-white/90 hover:bg-red-50 hover:text-red-500 text-gray-600"
+          }`}
+          title={
+            isTogglingWishlist
+              ? "Processing..."
+              : isInWishlist(product.id)
+              ? t("wishlist.removeFromWishlist")
+              : t("wishlist.addToWishlist")
+          }
+        >
+          {isTogglingWishlist ? (
+            <LoaderIcon className="w-4 h-4 animate-spin" />
+          ) : (
+            <HeartIcon
+              className={`w-4 h-4 transition-transform duration-200 group-hover/heart:scale-110 ${
+                isInWishlist(product.id) ? "fill-current" : ""
+              }`}
+            />
+          )}
+        </button>
+
         {product.isNew && (
-          <div className="absolute top-3 right-3 bg-green-600 text-white px-3 py-1.5 text-xs font-bold rounded-lg shadow-lg font-poppins tracking-wide transform transition-all duration-300 ease-in-out hover:scale-110">
-            NEW
-          </div>
-        )}
-        {product.discount && (
-          <div className="absolute top-3 left-3 bg-orange-600 text-white px-3 py-1.5 text-xs font-bold rounded-lg shadow-lg font-poppins tracking-wide transform transition-all duration-300 ease-in-out hover:scale-110">
-            -{product.discount}%
+          <div
+            className={`absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded-md ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {t("product.new")}
           </div>
         )}
       </div>
 
       {/* Product Info */}
-      <div className="p-6 bg-gradient-to-b from-white to-gray-50 group-hover:from-blue-50 group-hover:to-white transition-all duration-300 ease-in-out">
-        {/* Category */}
-        <p className="text-xs text-gray-800 uppercase tracking-wide mb-2 font-poppins font-semibold transform transition-all duration-300 ease-in-out group-hover:text-blue-700">
-          {product.category}
-        </p>
+      <div className="p-4 bg-white flex flex-col flex-grow">
+        {/* Product Content - Flexible area */}
+        <div className="flex-grow">
+          {/* Product Name - Always use Rubik for brand consistency
+              Note: Product names are NOT translated to maintain brand recognition */}
+          <h3 className="font-medium text-gray-900 mb-1 text-sm leading-tight line-clamp-2 font-rubik">
+            {truncateText(product.name, 60)}
+          </h3>
 
-        {/* Product Name */}
-        <h3 className="font-bold text-gray-900 mb-3 line-clamp-2 font-poppins text-sm leading-relaxed transform transition-all duration-300 ease-in-out group-hover:text-blue-800">
-          {truncateText(product.name, 50)}
-        </h3>
-
-        {/* Rating */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex transform transition-all duration-300 ease-in-out group-hover:scale-110">
-            {renderStars(product.rating)}
-          </div>
-          <span className="text-xs text-gray-800 font-poppins font-semibold transform transition-all duration-300 ease-in-out group-hover:text-blue-700">
-            ({product.reviewCount})
-          </span>
+          {/* Model/Category - Translate if generic terms */}
+          <p
+            className={`text-xs text-gray-500 mb-3 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {product.category}
+          </p>
         </div>
 
-        {/* Price */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-lg font-bold text-blue-800 font-poppins transform transition-all duration-300 ease-in-out group-hover:text-blue-900 group-hover:scale-110">
-            {formatPrice(product.price)}
-          </span>
-          {product.originalPrice && (
-            <span className="text-sm text-gray-600 line-through font-poppins transform transition-all duration-300 ease-in-out group-hover:text-gray-500">
-              {formatPrice(product.originalPrice)}
+        {/* Price and Cart Section - Fixed at bottom */}
+        <div className="flex items-end justify-between mt-auto">
+          <div className="space-y-1">
+            {product.originalPrice && (
+              <span
+                className={`text-xs text-gray-400 line-through block ${
+                  isKhmer ? "font-khmer" : "font-rubik"
+                }`}
+              >
+                {formatPrice(product.originalPrice)}
+              </span>
+            )}
+            <span
+              className={`text-base sm:text-lg font-bold text-gray-900 block ${
+                isKhmer ? "font-khmer" : "font-rubik"
+              }`}
+            >
+              {formatPrice(product.price)}
             </span>
-          )}
-        </div>
+          </div>
 
-        {/* Add to Cart Button */}
-        <Button
-          onClick={handleAddToCart}
-          className="w-full font-poppins font-bold text-sm bg-blue-800 hover:bg-blue-900 transform hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:ring-2 focus:ring-blue-700 focus:ring-offset-2 min-h-[44px]"
-          disabled={!product.inStock}
-        >
-          {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}
-        </Button>
+          {/* Add to Cart Icon - Aligned with price */}
+          <button
+            onClick={handleAddToCart}
+            disabled={!product.inStock || isAddingToCart}
+            className="w-8 h-8 bg-gray-100 hover:bg-teal-600 hover:text-white disabled:bg-gray-200 text-gray-600 rounded-lg transition-all duration-200 ease-in-out disabled:cursor-not-allowed flex items-center justify-center group/btn flex-shrink-0"
+            title={
+              !product.inStock
+                ? t("product.outOfStock")
+                : isAddingToCart
+                ? "Adding..."
+                : t("product.addToCart")
+            }
+          >
+            {isAddingToCart ? (
+              <LoaderIcon className="w-4 h-4 animate-spin" />
+            ) : (
+              <ShoppingBagIcon className="w-4 h-4 transition-transform duration-200 group-hover/btn:scale-110" />
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
+
+  // Return with or without Link wrapper based on showLink prop
+  if (showLink) {
+    return (
+      <Link href={`/products/${product.id}`} className="h-full">
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return cardContent;
 };
 
 export default ProductCard;

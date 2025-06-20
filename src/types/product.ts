@@ -1,3 +1,23 @@
+export interface ProductVariant {
+  id: string;
+  name: string;
+  type: "color" | "size" | "storage" | "memory" | "style";
+  value: string;
+  displayValue: string;
+  colorCode?: string;
+  priceModifier: number;
+  stockCount: number;
+  inStock: boolean;
+  images?: string[];
+}
+
+export interface VariantGroup {
+  type: "color" | "size" | "storage" | "memory" | "style";
+  name: string;
+  variants: ProductVariant[];
+  required: boolean;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -19,6 +39,7 @@ export interface Product {
   isNew?: boolean;
   tags?: string[];
   specifications?: Record<string, string>;
+  variants?: VariantGroup[];
   createdAt: string;
   updatedAt: string;
 }

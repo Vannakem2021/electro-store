@@ -9,3 +9,6 @@ export * from "./ui";
 
 // Account Components
 export * from "./account";
+
+// Error Handling Components
+export { default as ErrorBoundary } from "./ErrorBoundary";

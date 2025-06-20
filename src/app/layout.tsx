@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Rubik } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { CartProvider } from "@/contexts/CartContext";
+import { WishlistProvider } from "@/contexts/WishlistContext";
+import { SearchProvider } from "@/contexts/SearchContext";
+import { ToastProvider } from "@/contexts/ToastContext";
+import { ErrorBoundary } from "@/components";
+import { ToastContainer } from "@/components/ui";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+const rubik = Rubik({
+  variable: "--font-rubik",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
@@ -22,7 +29,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>{children}</body>
+      <body className={`${rubik.variable} antialiased`}>
+        <ErrorBoundary level="global">
+          <LanguageProvider>
+            <ToastProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <SearchProvider>
+                    {children}
+                    <ToastContainer />
+                  </SearchProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </ToastProvider>
+          </LanguageProvider>
+        </ErrorBoundary>
+      </body>
     </html>
   );
 }

@@ -2,9 +2,27 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { navigationItems } from "@/data";
+import {
+  SearchIcon,
+  ShoppingBagIcon,
+  HeartIcon,
+  UserIcon,
+  MenuIcon,
+  CloseIcon,
+  LanguageToggle,
+  SearchInput,
+} from "@/components/ui";
 
 const Navbar: React.FC = () => {
+  const { t } = useTranslation();
+  const { isKhmer } = useLanguage();
+  const { itemCount } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -12,53 +30,32 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link
               href="/"
-              className="text-2xl font-bold text-blue-800 hover:text-blue-900 transition-colors font-poppins"
+              className="text-2xl font-bold text-teal-800 hover:text-teal-900 transition-colors font-rubik"
             >
               Elecxo
             </Link>
           </div>
 
-          {/* Search Bar - Repositioned after logo */}
-          <div className="hidden md:block flex-1 max-w-md mx-6">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition-all duration-200 text-gray-900 placeholder-gray-600 font-poppins min-h-[40px]"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <svg
-                  className="h-5 w-5 text-gray-500 hover:text-blue-600 transition-colors"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-            </div>
+          {/* Search Bar - Clean and prominent */}
+          <div className="hidden md:block flex-1 max-w-lg mx-8">
+            <SearchInput />
           </div>
 
-          {/* Desktop Navigation - Moved after search */}
+          {/* Desktop Navigation - Clean and minimal */}
           <div className="hidden md:block">
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="text-gray-900 hover:text-blue-800 px-3 py-2 text-sm font-semibold transition-colors duration-200 font-poppins border-b-2 border-transparent hover:border-blue-800 min-h-[44px] flex items-center"
+                  className="text-gray-700 hover:text-teal-600 px-3 py-2 text-sm font-medium transition-colors duration-200 font-rubik"
                 >
                   {item.label}
                 </Link>
@@ -66,77 +63,61 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side actions */}
-          <div className="hidden md:flex items-center space-x-3 ml-6">
+          {/* Right side actions - Clean and minimal */}
+          <div className="hidden md:flex items-center space-x-4 ml-6">
+            {/* Language Toggle */}
+            <LanguageToggle />
+
             {/* Wishlist */}
             <Link
               href="/account/wishlist"
-              className="p-3 text-gray-900 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200 group min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 text-gray-600 hover:text-teal-600 transition-colors duration-200 relative"
+              title={t("nav.wishlist")}
             >
-              <svg
-                className="h-6 w-6 group-hover:scale-110 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
+              <HeartIcon className="h-5 w-5" />
+              {wishlistCount > 0 && (
+                <span
+                  className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium ${
+                    isKhmer ? "font-khmer" : "font-rubik"
+                  }`}
+                >
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
+                </span>
+              )}
             </Link>
 
             {/* Cart */}
             <Link
               href="/cart"
-              className="p-3 text-gray-900 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200 relative group min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 text-gray-600 hover:text-teal-600 transition-colors duration-200 relative"
+              title={t("nav.cart")}
             >
-              <svg
-                className="h-6 w-6 group-hover:scale-110 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"
-                />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 01-8 0" />
-              </svg>
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold font-poppins shadow-lg">
-                3
-              </span>
+              <ShoppingBagIcon className="h-5 w-5" />
+              {itemCount > 0 && (
+                <span
+                  className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium ${
+                    isKhmer ? "font-khmer" : "font-rubik"
+                  }`}
+                >
+                  {itemCount > 99 ? "99+" : itemCount}
+                </span>
+              )}
             </Link>
 
             {/* Account */}
             <Link
               href="/auth/login"
-              className="p-3 text-gray-900 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200 group min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 text-gray-600 hover:text-teal-600 transition-colors duration-200"
             >
-              <svg
-                className="h-6 w-6 group-hover:scale-110 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+              <UserIcon className="h-5 w-5" />
             </Link>
 
-            {/* Login Button */}
+            {/* Login Button - Simplified */}
             <Link
               href="/auth/login"
-              className="hidden md:inline-flex items-center px-4 py-2 border-2 border-blue-800 text-blue-800 font-poppins font-semibold rounded-lg hover:bg-blue-800 hover:text-white transition-all duration-200 min-h-[44px]"
+              className={`ml-4 px-4 py-2 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-200 ${
+                isKhmer ? "font-khmer" : "font-rubik"
+              }`}
             >
               Login
             </Link>
@@ -146,62 +127,74 @@ const Navbar: React.FC = () => {
           <div className="md:hidden ml-auto">
             <button
               onClick={toggleMenu}
-              className="p-3 text-gray-900 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 text-gray-600 hover:text-teal-600 transition-colors duration-200"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={
-                    isMenuOpen
-                      ? "M6 18L18 6M6 6l12 12"
-                      : "M4 6h16M4 12h16M4 18h16"
-                  }
-                />
-              </svg>
+              {isMenuOpen ? (
+                <CloseIcon className="h-6 w-6" />
+              ) : (
+                <MenuIcon className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Clean and minimal */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-4 pt-4 pb-4 space-y-2 border-t-2 border-gray-200 bg-gray-50">
+            <div className="px-4 pt-4 pb-4 space-y-3 border-t border-gray-200 bg-white">
               {navigationItems.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="text-gray-900 hover:text-blue-800 hover:bg-blue-50 flex items-center px-4 py-3 text-base font-semibold rounded-lg transition-all duration-200 font-poppins border-l-4 border-transparent hover:border-blue-800 min-h-[44px]"
+                  className="text-gray-700 hover:text-teal-600 flex items-center px-3 py-2 text-base font-medium rounded-lg transition-colors duration-200 font-rubik"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-4 space-y-2">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition-all duration-200 text-gray-900 placeholder-gray-600 font-poppins min-h-[44px]"
-                />
+              <div className="pt-4 space-y-3">
+                {/* Language Toggle for Mobile */}
+                <div className="flex justify-center">
+                  <LanguageToggle />
+                </div>
+
+                <SearchInput isMobile={true} />
+                <div className="flex space-x-3">
+                  <Link
+                    href="/account/wishlist"
+                    className="flex-1 flex items-center justify-center py-3 text-gray-600 hover:text-teal-600 transition-colors duration-200 relative"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <HeartIcon className="h-5 w-5 mr-2" />
+                    Wishlist
+                    {wishlistCount > 0 && (
+                      <span className="absolute top-1 right-8 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium">
+                        {wishlistCount > 99 ? "99+" : wishlistCount}
+                      </span>
+                    )}
+                  </Link>
+                  <Link
+                    href="/cart"
+                    className="flex-1 flex items-center justify-center py-3 text-gray-600 hover:text-teal-600 transition-colors duration-200 relative"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <ShoppingBagIcon className="h-5 w-5 mr-2" />
+                    Cart
+                    {itemCount > 0 && (
+                      <span className="absolute top-1 right-8 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium">
+                        {itemCount > 99 ? "99+" : itemCount}
+                      </span>
+                    )}
+                  </Link>
+                </div>
                 <Link
                   href="/auth/login"
-                  className="w-full flex items-center justify-center px-4 py-3 bg-blue-800 text-white font-poppins font-semibold rounded-lg hover:bg-blue-900 transition-all duration-200 min-h-[44px]"
+                  className={`w-full flex items-center justify-center px-4 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-200 ${
+                    isKhmer ? "font-khmer" : "font-rubik"
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="w-full flex items-center justify-center px-4 py-3 border-2 border-blue-800 text-blue-800 font-poppins font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 min-h-[44px]"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
                 </Link>
               </div>
             </div>

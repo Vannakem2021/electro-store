@@ -14,6 +14,17 @@ export const getBestSellerProducts = (): Product[] => {
   return products.filter((product) => product.isBestSeller);
 };
 
+export const getDiscountProducts = (): Product[] => {
+  return products.filter(
+    (product) =>
+      product.discount && product.discount > 0 && product.originalPrice
+  );
+};
+
+export const getNewProducts = (): Product[] => {
+  return products.filter((product) => product.isNew);
+};
+
 export const getProductsByCategory = (categoryId: string): Product[] => {
   return products.filter((product) => product.categoryId === categoryId);
 };
@@ -30,9 +41,6 @@ export const getProductById = (id: string): Product | undefined => {
 export const navigationItems = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
-  { label: "Categories", href: "/categories" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
 ];
 
 // Mock footer data

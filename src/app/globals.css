@@ -1,15 +1,26 @@
 @import "tailwindcss";
 
+/* Khmer Font Face */
+@font-face {
+  font-family: "OpenKhmerSchool";
+  src: url("/font/OpenKhmerSchool-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-khmer: "OpenKhmerSchool", "Khmer OS", "Khmer OS System", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins);
-  --font-mono: var(--font-poppins);
+  --font-sans: var(--font-rubik);
+  --font-mono: var(--font-rubik);
+  --font-khmer: var(--font-khmer);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,14 +33,19 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-poppins), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-rubik), system-ui, -apple-system, sans-serif;
   font-weight: 400;
   line-height: 1.6;
 }
 
 /* Enhanced font classes */
-.font-poppins {
-  font-family: var(--font-poppins), system-ui, -apple-system, sans-serif;
+.font-rubik {
+  font-family: var(--font-rubik), system-ui, -apple-system, sans-serif;
+}
+
+.font-khmer {
+  font-family: var(--font-khmer);
+  line-height: 1.8; /* Better line height for Khmer text */
 }
 
 /* WCAG-compliant accessibility colors with 4.5:1+ contrast ratio */
@@ -41,16 +57,16 @@ body {
   color: #111827; /* 7.1:1 contrast on white */
 }
 
-.text-blue-700 {
-  color: #1d4ed8; /* 4.5:1 contrast on white */
+.text-teal-700 {
+  color: #0f766e; /* 4.5:1 contrast on white */
 }
 
-.text-blue-800 {
-  color: #1e40af; /* 5.9:1 contrast on white */
+.text-teal-800 {
+  color: #115e59; /* 5.9:1 contrast on white */
 }
 
-.text-blue-900 {
-  color: #1e3a8a; /* 7.2:1 contrast on white */
+.text-teal-900 {
+  color: #134e4a; /* 7.2:1 contrast on white */
 }
 
 /* High contrast text for better accessibility */
@@ -60,11 +76,11 @@ body {
 
 /* Accessible link colors */
 .text-link {
-  color: #1d4ed8; /* 4.5:1 contrast on white */
+  color: #0f766e; /* 4.5:1 contrast on white */
 }
 
 .text-link-hover {
-  color: #1e3a8a; /* 7.2:1 contrast on white */
+  color: #134e4a; /* 7.2:1 contrast on white */
 }
 
 /* Custom scrollbar */
@@ -83,6 +99,16 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Line clamp utility */
@@ -124,7 +150,7 @@ body {
 }
 
 .hover-glow:hover {
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 25px -5px rgba(20, 184, 166, 0.5);
 }
 
 /* Animation keyframes */

@@ -3,9 +3,9 @@ import {
   Navbar,
   Footer,
   HeroSection,
-  CategorySection,
-  ProductSection,
   BestSellerSection,
+  DiscountProductsSection,
+  NewProductsSection,
 } from "@/components";
 
 export default function Home() {
@@ -19,11 +19,11 @@ export default function Home() {
         {/* Hero Section */}
         <HeroSection />
 
-        {/* Category Section */}
-        <CategorySection />
+        {/* Discount Products Section */}
+        <DiscountProductsSection />
 
-        {/* Product Section */}
-        <ProductSection />
+        {/* New Products Section */}
+        <NewProductsSection />
 
         {/* Best Seller Section */}
         <BestSellerSection />

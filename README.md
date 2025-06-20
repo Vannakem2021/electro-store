@@ -32,7 +32,7 @@ A modern, responsive e-commerce website built with Next.js, TypeScript, and Tail
 
 - **Mobile-first responsive design** that works on all devices
 - **Clean, modern UI** with smooth animations and transitions
-- **Professional color scheme** with blue primary colors
+- **Professional color scheme** with teal primary colors
 - **High-quality product images** from Unsplash
 - **Consistent typography** using Geist font family
 
@@ -212,9 +212,9 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
 
 ### Colors
 
-The project uses a blue-based color scheme. To customize:
+The project uses a teal-based color scheme. To customize:
 
-1. **Primary Colors**: Update blue colors in Tailwind classes
+1. **Primary Colors**: Update teal colors in Tailwind classes
 2. **Brand Colors**: Modify the color variables in `globals.css`
 3. **Component Themes**: Update individual component styling
 

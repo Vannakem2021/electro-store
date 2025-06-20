@@ -86,23 +86,26 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
           <p className="text-gray-800 max-w-2xl mx-auto font-mono leading-relaxed text-lg font-medium">
             {category.description}
           </p>
-          <p className="text-blue-700 font-mono font-semibold mt-4">
+          <p className="text-teal-700 font-mono font-semibold mt-4">
             {products.length} products available
           </p>
 
           {/* Decorative line */}
           <div className="mt-8 flex justify-center">
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-teal-600 to-teal-800 rounded-full"></div>
           </div>
         </div>
 
         {/* Products Grid */}
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12 items-stretch">
             {products.map((product) => (
-              <Link key={product.id} href={`/products/${product.id}`}>
-                <ProductCard product={product} onAddToCart={handleAddToCart} />
-              </Link>
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+                showLink={true}
+              />
             ))}
           </div>
         ) : (
@@ -112,7 +115,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
             </p>
             <Link
               href="/products"
-              className="inline-block mt-4 text-blue-700 hover:text-blue-800 font-mono font-semibold transition-colors duration-200"
+              className="inline-block mt-4 text-teal-700 hover:text-teal-800 font-mono font-semibold transition-colors duration-200"
             >
               Browse All Products
             </Link>

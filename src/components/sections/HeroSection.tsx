@@ -2,15 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 
 interface HeroSlide {
   id: number;
-  title: string;
-  subtitle: string;
-  description: string;
+  titleKey: string;
+  subtitleKey: string;
+  descriptionKey: string;
   image: string;
-  ctaText: string;
+  ctaKey: string;
   ctaLink: string;
   bgColor: string;
 }
@@ -18,41 +20,42 @@ interface HeroSlide {
 const heroSlides: HeroSlide[] = [
   {
     id: 1,
-    title: "Noise Cancelling",
-    subtitle: "Headphone",
-    description:
-      "Bose Over-Ear Headphones\nWifi, Voice Assistant,\nLow Latency Game Mode",
+    titleKey: "hero.slides.headphones.title",
+    subtitleKey: "hero.slides.headphones.subtitle",
+    descriptionKey: "hero.slides.headphones.description",
     image:
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=400&fit=crop&crop=center",
-    ctaText: "BUY NOW",
+    ctaKey: "hero.slides.headphones.cta",
     ctaLink: "/products/headphones",
-    bgColor: "bg-yellow-50",
+    bgColor: "bg-gray-50",
   },
   {
     id: 2,
-    title: "Sport Water",
-    subtitle: "Resistance Watch",
-    description: "XOMIA\nSport Water\nResistance\nWatch",
+    titleKey: "hero.slides.watch.title",
+    subtitleKey: "hero.slides.watch.subtitle",
+    descriptionKey: "hero.slides.watch.description",
     image:
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop&crop=center",
-    ctaText: "SHOP NOW",
+    ctaKey: "hero.slides.watch.cta",
     ctaLink: "/products/watches",
-    bgColor: "bg-green-50",
+    bgColor: "bg-gray-50",
   },
   {
     id: 3,
-    title: "OKODO",
-    subtitle: "HERO 11+ BLACK",
-    description: "FROM\n$169",
+    titleKey: "hero.slides.camera.title",
+    subtitleKey: "hero.slides.camera.subtitle",
+    descriptionKey: "hero.slides.camera.description",
     image:
       "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600&h=400&fit=crop&crop=center",
-    ctaText: "DISCOVER",
+    ctaKey: "hero.slides.camera.cta",
     ctaLink: "/products/cameras",
-    bgColor: "bg-blue-50",
+    bgColor: "bg-gray-50",
   },
 ];
 
 const HeroSection: React.FC = () => {
+  const { t } = useTranslation();
+  const { isKhmer } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -73,57 +76,70 @@ const HeroSection: React.FC = () => {
     <section className="relative overflow-hidden py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`${currentHero.bgColor} rounded-2xl transition-all duration-500 ease-in-out border-2 border-gray-200 shadow-lg hover:shadow-xl`}
+          className={`${currentHero.bgColor} rounded-md transition-all duration-300 ease-in-out shadow-md hover:shadow-xl`}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[500px] p-8 lg:p-12">
             {/* Content */}
-            <div className="space-y-8 transform transition-all duration-300 ease-in-out">
-              <div className="transform transition-all duration-300 ease-in-out">
-                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight font-poppins tracking-tight transform transition-all duration-300 ease-in-out hover:text-blue-800">
-                  {currentHero.title}
+            <div className="space-y-6">
+              <div>
+                <h1
+                  className={`text-4xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight ${
+                    isKhmer ? "font-khmer" : "font-rubik"
+                  }`}
+                >
+                  {t(currentHero.titleKey)}
                 </h1>
-                <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight font-poppins tracking-tight transform transition-all duration-300 ease-in-out hover:text-blue-800">
-                  {currentHero.subtitle}
+                <h2
+                  className={`text-4xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight ${
+                    isKhmer ? "font-khmer" : "font-rubik"
+                  }`}
+                >
+                  {t(currentHero.subtitleKey)}
                 </h2>
               </div>
 
-              <p className="text-gray-800 text-lg whitespace-pre-line max-w-md font-poppins leading-relaxed font-medium transform transition-all duration-300 ease-in-out">
-                {currentHero.description}
+              <p
+                className={`text-gray-700 text-lg whitespace-pre-line max-w-md leading-relaxed ${
+                  isKhmer ? "font-khmer" : "font-rubik"
+                }`}
+              >
+                {t(currentHero.descriptionKey)}
               </p>
 
               <Button
                 size="lg"
-                className="bg-blue-800 hover:bg-blue-900 text-white font-poppins font-bold px-8 py-4 text-lg shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-95 min-h-[56px]"
+                className={
+                  isKhmer ? "font-khmer font-medium" : "font-rubik font-medium"
+                }
               >
-                {currentHero.ctaText}
+                {t(currentHero.ctaKey)}
               </Button>
             </div>
 
             {/* Image */}
-            <div className="relative transform transition-all duration-500 ease-in-out">
-              <div className="relative aspect-square max-w-md mx-auto transform transition-all duration-500 ease-in-out hover:scale-105">
+            <div className="relative">
+              <div className="relative aspect-square max-w-md mx-auto transition-transform duration-300 ease-in-out hover:scale-105">
                 <Image
                   src={currentHero.image}
-                  alt={currentHero.title}
+                  alt={t(currentHero.titleKey)}
                   fill
-                  className="object-cover rounded-2xl transition-all duration-500 ease-in-out"
+                  className="object-cover rounded-md"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out"></div>
               </div>
             </div>
           </div>
 
           {/* Slide Indicators */}
-          <div className="flex justify-center space-x-3 pb-8">
+          <div className="flex justify-center space-x-2 pb-6">
             {heroSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`rounded-full border-2 transform transition-all duration-300 ease-in-out hover:scale-125 active:scale-90 ${
+                className={`rounded-full transition-all duration-200 ease-in-out ${
                   index === currentSlide
-                    ? "w-6 h-4 bg-blue-800 border-blue-800 shadow-lg hover:shadow-xl"
-                    : "w-4 h-4 bg-gray-300 border-gray-500 hover:bg-gray-400 hover:border-gray-600 hover:shadow-md"
+                    ? "w-6 h-3 bg-teal-800"
+                    : "w-3 h-3 bg-gray-300 hover:bg-gray-400"
                 }`}
               />
             ))}
@@ -132,58 +148,79 @@ const HeroSection: React.FC = () => {
       </div>
 
       {/* Side Products */}
-      <div className="hidden lg:block absolute right-4 top-1/2 transform -translate-y-1/2 space-y-6">
+      <div className="hidden lg:block absolute right-4 top-1/2 transform -translate-y-1/2 space-y-4">
         {/* PlayStation 5 Card */}
-        <div className="bg-white rounded-lg shadow-xl border-2 border-gray-300 p-5 w-64 transform transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 hover:-translate-y-2 hover:border-blue-500 group">
-          <div className="text-xs text-gray-800 mb-2 font-poppins font-semibold uppercase tracking-wide transition-all duration-300 ease-in-out group-hover:text-blue-800">
-            Sono Playgo 5
+        <div className="bg-white rounded-md shadow-md p-4 w-56 transition-all duration-300 ease-in-out hover:shadow-xl group cursor-pointer">
+          <div
+            className={`text-xs text-gray-600 mb-1 font-medium uppercase tracking-wide ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {t("sideProducts.playstation")}
           </div>
-          <div className="text-sm font-bold mb-3 text-gray-900 font-poppins transition-all duration-300 ease-in-out group-hover:text-blue-800">
-            from $569
+          <div
+            className={`text-sm font-bold mb-3 text-gray-900 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {t("product.from")} $569
           </div>
-          <div className="relative h-20 mb-4 rounded-lg overflow-hidden transform transition-all duration-300 ease-in-out group-hover:scale-105">
+          <div className="relative h-16 mb-3 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=300&h=200&fit=crop&crop=center"
               alt="PlayStation 5"
               fill
-              className="object-cover transition-all duration-300 ease-in-out group-hover:scale-110"
+              className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out"></div>
           </div>
           <Button
             size="sm"
-            variant="outline"
-            className="w-full text-xs font-poppins font-bold border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transform hover:scale-105 transition-all duration-300 ease-in-out hover:shadow-lg active:scale-95 min-h-[36px]"
+            variant="secondary"
+            className={`w-full text-xs ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
           >
-            DISCOVER NOW
+            {t("sideProducts.discoverNow")}
           </Button>
         </div>
 
         {/* Gaming Card */}
-        <div className="bg-gray-900 text-white rounded-lg p-5 w-64 shadow-xl border-2 border-gray-700 transform transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 hover:-translate-y-2 hover:border-blue-500 group cursor-pointer">
-          <div className="text-2xl font-bold mb-2 font-poppins text-white transition-all duration-300 ease-in-out group-hover:text-blue-300">
-            OKODO
+        <div className="bg-gray-100 rounded-md shadow-md p-4 w-56 transition-all duration-300 ease-in-out hover:shadow-xl group cursor-pointer">
+          <div
+            className={`text-lg font-bold mb-1 text-gray-900 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {t("sideProducts.gaming")}
           </div>
-          <div className="text-lg font-semibold mb-1 font-poppins text-gray-100 transition-all duration-300 ease-in-out group-hover:text-white">
-            HERO 11+
+          <div
+            className={`text-sm font-medium mb-1 text-gray-700 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {t("sideProducts.hero")} {t("sideProducts.black")}
           </div>
-          <div className="text-lg font-semibold mb-3 font-poppins text-gray-100 transition-all duration-300 ease-in-out group-hover:text-white">
-            BLACK
+          <div
+            className={`text-xs text-gray-600 mb-1 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            {t("product.from")}
           </div>
-          <div className="text-sm text-gray-300 mb-1 font-poppins font-semibold transition-all duration-300 ease-in-out group-hover:text-gray-200">
-            FROM
-          </div>
-          <div className="text-2xl font-bold text-blue-400 mb-3 font-poppins transition-all duration-300 ease-in-out group-hover:text-blue-300 group-hover:scale-110 transform">
+          <div
+            className={`text-xl font-bold text-teal-800 mb-3 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
             $169
           </div>
-          <div className="relative h-16 mb-3 rounded-lg overflow-hidden transform transition-all duration-300 ease-in-out group-hover:scale-105">
+          <div className="relative h-16 mb-3 rounded-lg overflow-hidden bg-gray-200">
             <Image
               src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=300&h=200&fit=crop&crop=center"
               alt="Gaming Device"
               fill
-              className="object-cover transition-all duration-300 ease-in-out group-hover:scale-110"
+              className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out"></div>
           </div>
         </div>
       </div>
