@@ -28,7 +28,6 @@ import {
   Unplug,
   Trash2,
   Loader2,
-  ChevronDown,
   Share2,
   Clock,
   Star,
@@ -39,6 +38,29 @@ import {
   Home,
   RotateCcw,
   MessageCircle,
+  Users,
+  Settings,
+  Bell,
+  LogOut,
+  Plus,
+  Folder,
+  Warehouse,
+  Truck,
+  TrendingUp,
+  TrendingDown,
+  ArrowLeft,
+  Edit,
+  Download,
+  DollarSign,
+  Upload,
+  Save,
+  Image,
+  Calendar,
+  Tag,
+  ChevronUp,
+  ChevronDown,
+  BarChart3,
+  ExternalLink,
   type LucideProps,
 } from "lucide-react";
 
@@ -94,9 +116,6 @@ export const WatchIcon: IconComponent = (props) => <Watch {...props} />;
 export const UnplugIcon: IconComponent = (props) => <Unplug {...props} />;
 export const TrashIcon: IconComponent = (props) => <Trash2 {...props} />;
 export const LoaderIcon: IconComponent = (props) => <Loader2 {...props} />;
-export const ChevronDownIcon: IconComponent = (props) => (
-  <ChevronDown {...props} />
-);
 export const ShareIcon: IconComponent = (props) => <Share2 {...props} />;
 export const ClockIcon: IconComponent = (props) => <Clock {...props} />;
 
@@ -119,6 +138,47 @@ export const ChatBubbleLeftRightIcon: IconComponent = (props) => (
 );
 export const MagnifyingGlassIcon: IconComponent = (props) => (
   <Search {...props} />
+);
+
+// Admin-specific icons
+export const UsersIcon: IconComponent = (props) => <Users {...props} />;
+export const ChartBarIcon: IconComponent = (props) => <BarChart3 {...props} />;
+export const CogIcon: IconComponent = (props) => <Settings {...props} />;
+export const BellIcon: IconComponent = (props) => <Bell {...props} />;
+export const LogOutIcon: IconComponent = (props) => <LogOut {...props} />;
+export const PlusIcon: IconComponent = (props) => <Plus {...props} />;
+export const FolderIcon: IconComponent = (props) => <Folder {...props} />;
+export const WarehouseIcon: IconComponent = (props) => <Warehouse {...props} />;
+export const TruckIcon: IconComponent = (props) => <Truck {...props} />;
+export const TrendingUpIcon: IconComponent = (props) => (
+  <TrendingUp {...props} />
+);
+export const TrendingDownIcon: IconComponent = (props) => (
+  <TrendingDown {...props} />
+);
+export const ArrowLeftIcon: IconComponent = (props) => <ArrowLeft {...props} />;
+export const EditIcon: IconComponent = (props) => <Edit {...props} />;
+export const DownloadIcon: IconComponent = (props) => <Download {...props} />;
+export const DollarSignIcon: IconComponent = (props) => (
+  <DollarSign {...props} />
+);
+export const UploadIcon: IconComponent = (props) => <Upload {...props} />;
+export const SaveIcon: IconComponent = (props) => <Save {...props} />;
+export const Loader2Icon: IconComponent = (props) => <Loader2 {...props} />;
+export const ImageIcon: IconComponent = (props) => <Image {...props} />;
+export const CalendarIcon: IconComponent = (props) => <Calendar {...props} />;
+export const TagIcon: IconComponent = (props) => <Tag {...props} />;
+export const AlertTriangleIcon: IconComponent = (props) => (
+  <AlertTriangle {...props} />
+);
+export const XIcon: IconComponent = (props) => <X {...props} />;
+export const ChevronUpIcon: IconComponent = (props) => <ChevronUp {...props} />;
+export const ChevronDownIcon: IconComponent = (props) => (
+  <ChevronDown {...props} />
+);
+export const BarChart3Icon: IconComponent = (props) => <BarChart3 {...props} />;
+export const ExternalLinkIcon: IconComponent = (props) => (
+  <ExternalLink {...props} />
 );
 
 // Export all icons as default
@@ -153,7 +213,6 @@ export default {
   UnplugIcon,
   TrashIcon,
   LoaderIcon,
-  ChevronDownIcon,
   ShareIcon,
   ClockIcon,
   CheckCircleIcon,
@@ -165,4 +224,31 @@ export default {
   ArrowPathIcon,
   ChatBubbleLeftRightIcon,
   MagnifyingGlassIcon,
+  UsersIcon,
+  ChartBarIcon,
+  CogIcon,
+  BellIcon,
+  LogOutIcon,
+  PlusIcon,
+  FolderIcon,
+  WarehouseIcon,
+  TruckIcon,
+  TrendingUpIcon,
+  TrendingDownIcon,
+  ArrowLeftIcon,
+  EditIcon,
+  DownloadIcon,
+  DollarSignIcon,
+  UploadIcon,
+  SaveIcon,
+  Loader2Icon,
+  ImageIcon,
+  CalendarIcon,
+  TagIcon,
+  AlertTriangleIcon,
+  XIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  BarChart3Icon,
+  ExternalLinkIcon,
 };

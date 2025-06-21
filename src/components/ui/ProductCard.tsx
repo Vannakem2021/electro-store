@@ -9,7 +9,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { Product } from "@/types";
 import { formatPrice, truncateText } from "@/lib/utils";
-import { ShoppingBagIcon, HeartIcon, LoaderIcon } from "@/components/ui";
+import { ShoppingBagIcon, HeartIcon, LoaderIcon } from "@/components/ui/Icons";
 
 interface ProductCardProps {
   product: Product;

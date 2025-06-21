@@ -6,6 +6,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { ToastProvider } from "@/contexts/ToastContext";
+import { AdminProvider } from "@/contexts/AdminContext";
 import { ErrorBoundary } from "@/components";
 import { ToastContainer } from "@/components/ui";
 
@@ -33,14 +34,16 @@ export default function RootLayout({
         <ErrorBoundary level="global">
           <LanguageProvider>
             <ToastProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <SearchProvider>
-                    {children}
-                    <ToastContainer />
-                  </SearchProvider>
-                </WishlistProvider>
-              </CartProvider>
+              <AdminProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    <SearchProvider>
+                      {children}
+                      <ToastContainer />
+                    </SearchProvider>
+                  </WishlistProvider>
+                </CartProvider>
+              </AdminProvider>
             </ToastProvider>
           </LanguageProvider>
         </ErrorBoundary>

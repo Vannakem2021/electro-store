@@ -14,9 +14,8 @@ import {
   UserIcon,
   MenuIcon,
   CloseIcon,
-  LanguageToggle,
-  SearchInput,
-} from "@/components/ui";
+} from "@/components/ui/Icons";
+import { LanguageToggle, SearchInput } from "@/components/ui";
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();

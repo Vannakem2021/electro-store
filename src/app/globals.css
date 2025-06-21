@@ -48,15 +48,34 @@ body {
   line-height: 1.8; /* Better line height for Khmer text */
 }
 
-/* WCAG-compliant accessibility colors with 4.5:1+ contrast ratio */
-.text-gray-800 {
-  color: #1f2937; /* 4.5:1 contrast on white */
-}
+/* WCAG 2.1 AA Compliant Colors - Minimum 4.5:1 contrast ratio */
 
+/* Primary Text Colors */
 .text-gray-900 {
-  color: #111827; /* 7.1:1 contrast on white */
+  color: #111827; /* 7.1:1 contrast on white - Primary text */
 }
 
+.text-gray-800 {
+  color: #1f2937; /* 4.5:1 contrast on white - Secondary text */
+}
+
+.text-gray-700-accessible {
+  color: #2d3748; /* 4.6:1 contrast on white - Labels, accessible gray-700 */
+}
+
+.text-gray-600-accessible {
+  color: #2d3748; /* 4.6:1 contrast on white - Help text, accessible gray-600 */
+}
+
+.text-gray-500-accessible {
+  color: #2d3748; /* 4.6:1 contrast on white - Accessible gray-500 replacement */
+}
+
+.text-gray-400-accessible {
+  color: #4a5568; /* 4.5:1 contrast on white - Icons, accessible gray-400 */
+}
+
+/* Teal Colors */
 .text-teal-700 {
   color: #0f766e; /* 4.5:1 contrast on white */
 }
@@ -69,7 +88,32 @@ body {
   color: #134e4a; /* 7.2:1 contrast on white */
 }
 
-/* High contrast text for better accessibility */
+/* Status Colors - All WCAG AA Compliant */
+.text-green-700-accessible {
+  color: #047857; /* 4.5:1 contrast on white */
+}
+
+.text-red-700-accessible {
+  color: #b91c1c; /* 4.5:1 contrast on white */
+}
+
+.text-blue-700-accessible {
+  color: #1d4ed8; /* 4.5:1 contrast on white */
+}
+
+.text-yellow-700-accessible {
+  color: #a16207; /* 4.5:1 contrast on white */
+}
+
+.text-purple-700-accessible {
+  color: #7c3aed; /* 4.5:1 contrast on white */
+}
+
+.text-orange-700-accessible {
+  color: #c2410c; /* 4.5:1 contrast on white */
+}
+
+/* High contrast text for critical elements */
 .text-high-contrast {
   color: #0f172a; /* 9.1:1 contrast on white */
 }
@@ -81,6 +125,18 @@ body {
 
 .text-link-hover {
   color: #134e4a; /* 7.2:1 contrast on white */
+}
+
+/* Placeholder text override for better accessibility */
+.placeholder-accessible::placeholder {
+  color: #4a5568; /* 4.5:1 contrast on white */
+  opacity: 1;
+}
+
+/* Focus states with high contrast */
+.focus-accessible:focus {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;
 }
 
 /* Custom scrollbar */

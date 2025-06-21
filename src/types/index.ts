@@ -1,5 +1,8 @@
-export * from './product';
-export * from './category';
+export * from "./product";
+export * from "./category";
+export * from "./admin";
+export * from "./admin-product";
+export * from "./admin-order";
 
 export interface User {
   id: string;
