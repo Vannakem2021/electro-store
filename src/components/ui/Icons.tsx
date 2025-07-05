@@ -61,6 +61,12 @@ import {
   ChevronDown,
   BarChart3,
   ExternalLink,
+  UserCheck,
+  ShieldAlert,
+  Phone,
+  Mail,
+  Globe,
+  Building2,
   type LucideProps,
 } from "lucide-react";
 
@@ -181,6 +187,22 @@ export const ExternalLinkIcon: IconComponent = (props) => (
   <ExternalLink {...props} />
 );
 
+// Customer-specific icons
+export const UserCheckIcon: IconComponent = (props) => <UserCheck {...props} />;
+export const ShieldExclamationIcon: IconComponent = (props) => (
+  <ShieldAlert {...props} />
+);
+export const PhoneIcon: IconComponent = (props) => <Phone {...props} />;
+export const EnvelopeIcon: IconComponent = (props) => <Mail {...props} />;
+export const CurrencyDollarIcon: IconComponent = (props) => (
+  <DollarSign {...props} />
+);
+export const UserXIcon: IconComponent = (props) => <User {...props} />;
+export const GlobeIcon: IconComponent = (props) => <Globe {...props} />;
+export const BuildingOfficeIcon: IconComponent = (props) => (
+  <Building2 {...props} />
+);
+
 // Export all icons as default
 export default {
   SearchIcon,
@@ -251,4 +273,12 @@ export default {
   ChevronDownIcon,
   BarChart3Icon,
   ExternalLinkIcon,
+  UserCheckIcon,
+  ShieldExclamationIcon,
+  PhoneIcon,
+  EnvelopeIcon,
+  CurrencyDollarIcon,
+  UserXIcon,
+  GlobeIcon,
+  BuildingOfficeIcon,
 };

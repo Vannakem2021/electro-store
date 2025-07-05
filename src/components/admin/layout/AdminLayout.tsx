@@ -68,18 +68,23 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Fixed Sidebar */}
       <div
         className={`${
           isMobile
             ? `fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out ${
                 sidebarCollapsed ? "-translate-x-full" : "translate-x-0"
               }`
-            : "relative"
+            : `fixed inset-y-0 left-0 z-30 transition-all duration-300 ease-in-out ${
+                sidebarCollapsed ? "w-16" : "w-64"
+              }`
         }`}
       >
-        <AdminSidebar collapsed={!isMobile && sidebarCollapsed} onToggle={toggleSidebar} />
+        <AdminSidebar
+          collapsed={!isMobile && sidebarCollapsed}
+          onToggle={toggleSidebar}
+        />
       </div>
 
       {/* Mobile sidebar overlay */}
@@ -90,8 +95,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
         />
       )}
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main content with left margin to account for fixed sidebar */}
+      <div
+        className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
+          isMobile ? "ml-0" : sidebarCollapsed ? "ml-16" : "ml-64"
+        }`}
+      >
         {/* Header */}
         <AdminHeader onSidebarToggle={toggleSidebar} />
 
@@ -104,9 +113,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
                 <nav className="flex items-center space-x-2 text-sm mb-2 font-rubik">
                   {breadcrumbs.map((crumb, index) => (
                     <React.Fragment key={index}>
-                      {index > 0 && (
-                        <span className="text-gray-400">/</span>
-                      )}
+                      {index > 0 && <span className="text-gray-400">/</span>}
                       {crumb.href ? (
                         <a
                           href={crumb.href}

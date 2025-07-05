@@ -34,52 +34,35 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const { isKhmer } = useLanguage();
   const { showError } = useToast();
 
-  // Form state
+  // Form state (simplified)
   const [formData, setFormData] = useState<CategoryFormData>({
     name: "",
     description: "",
     image: "",
-    icon: "",
     slug: "",
     isActive: true,
     sortOrder: 0,
     parentId: "",
-    seoTitle: "",
-    seoDescription: "",
-    seoKeywords: [],
     showInNavigation: true,
-    featuredOrder: 0,
-    bannerImage: "",
-    iconColor: "#0d9488",
-    metafields: {},
   });
 
   const [errors, setErrors] = useState<CategoryValidationErrors>({});
-  const [activeTab, setActiveTab] = useState("basic");
   const [availableCategories, setAvailableCategories] = useState<
     AdminCategory[]
   >([]);
 
-  // Initialize form data when category changes
+  // Initialize form data when category changes (simplified)
   useEffect(() => {
     if (category && mode === "edit") {
       setFormData({
         name: category.name,
         description: category.description,
         image: category.image,
-        icon: category.icon || "",
         slug: category.slug,
         isActive: category.isActive,
         sortOrder: category.sortOrder,
         parentId: category.parentId || "",
-        seoTitle: category.seoTitle || "",
-        seoDescription: category.seoDescription || "",
-        seoKeywords: category.seoKeywords || [],
         showInNavigation: category.showInNavigation ?? true,
-        featuredOrder: category.featuredOrder || 0,
-        bannerImage: category.bannerImage || "",
-        iconColor: category.iconColor || "#0d9488",
-        metafields: category.metafields || {},
       });
     }
   }, [category, mode]);
@@ -138,47 +121,21 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     }
   };
 
-  // Handle array inputs (keywords)
-  const handleArrayInput = (field: "seoKeywords", value: string) => {
-    const items = value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-    handleInputChange(field, items);
-  };
-
-  const tabs = [
-    { id: "basic", label: "Basic Information" },
-    { id: "display", label: "Display Settings" },
-    { id: "seo", label: "SEO & Metadata" },
-  ];
+  // Simplified form - no tabs needed
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Tab Navigation */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8 overflow-x-auto">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 focus-accessible ${
-                activeTab === tab.id
-                  ? "border-teal-500 text-teal-600"
-                  : "border-transparent text-gray-500-accessible hover:text-gray-700-accessible hover:border-gray-300"
-              } ${isKhmer ? "font-khmer" : "font-rubik"}`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      {/* Tab Content */}
-      <div className="space-y-6">
-        {/* Basic Information Tab */}
-        {activeTab === "basic" && (
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Simplified Single Form */}
+      <div className="space-y-8">
+        {/* Basic Information Section */}
+        <div>
+          <h3
+            className={`text-lg font-semibold text-gray-900 mb-6 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            Basic Information
+          </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <FormField label="Category Name" required error={errors.name}>
               <input
@@ -252,50 +209,65 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                 placeholder="0"
               />
             </FormField>
+          </div>
+        </div>
 
-            <FormField
-              label="Category Image"
-              required
-              error={errors.image}
-              className="lg:col-span-2"
-            >
-              <ImageUpload
-                images={formData.image ? [formData.image] : []}
-                onImagesChange={(images) =>
-                  handleInputChange("image", images[0] || "")
-                }
-                maxImages={1}
-                maxFileSize={5}
-              />
+        {/* Category Image Section */}
+        <div>
+          <h3
+            className={`text-lg font-semibold text-gray-900 mb-6 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            Category Image
+          </h3>
+          <FormField
+            label="Category Image"
+            required
+            error={errors.image}
+            helpText="Upload an image to represent this category"
+          >
+            <ImageUpload
+              images={formData.image ? [formData.image] : []}
+              onImagesChange={(images) =>
+                handleInputChange("image", images[0] || "")
+              }
+              maxImages={1}
+              maxFileSize={5}
+            />
+          </FormField>
+        </div>
+
+        {/* Category Status Section */}
+        <div>
+          <h3
+            className={`text-lg font-semibold text-gray-900 mb-6 ${
+              isKhmer ? "font-khmer" : "font-rubik"
+            }`}
+          >
+            Category Status
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField label="Active">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.isActive}
+                  onChange={(e) =>
+                    handleInputChange("isActive", e.target.checked)
+                  }
+                  className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                />
+                <span
+                  className={`ml-2 text-sm text-gray-700-accessible ${
+                    isKhmer ? "font-khmer" : "font-rubik"
+                  }`}
+                >
+                  Category is active and visible
+                </span>
+              </label>
             </FormField>
 
-            <div className="lg:col-span-2">
-              <FormField label="Active">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.isActive}
-                    onChange={(e) =>
-                      handleInputChange("isActive", e.target.checked)
-                    }
-                    className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
-                  />
-                  <span
-                    className={`ml-2 text-sm text-gray-700-accessible ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
-                    Category is active and visible
-                  </span>
-                </label>
-              </FormField>
-            </div>
-          </div>
-        )}
-
-        {/* Display Settings Tab */}
-        {activeTab === "display" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <FormField label="Show in Navigation">
               <label className="flex items-center">
                 <input
@@ -315,135 +287,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                 </span>
               </label>
             </FormField>
-
-            <FormField
-              label="Featured Order"
-              helpText="Order in featured categories (0 = not featured)"
-            >
-              <input
-                type="number"
-                min="0"
-                value={formData.featuredOrder}
-                onChange={(e) =>
-                  handleInputChange(
-                    "featuredOrder",
-                    parseInt(e.target.value) || 0
-                  )
-                }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-accessible focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-accessible"
-                placeholder="0"
-              />
-            </FormField>
-
-            <FormField label="Icon" helpText="CSS class or icon name">
-              <input
-                type="text"
-                value={formData.icon}
-                onChange={(e) => handleInputChange("icon", e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-accessible focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-accessible"
-                placeholder="e.g., package, smartphone, laptop"
-              />
-            </FormField>
-
-            <FormField
-              label="Icon Color"
-              helpText="Hex color code for the icon"
-            >
-              <div className="flex space-x-2">
-                <input
-                  type="color"
-                  value={formData.iconColor}
-                  onChange={(e) =>
-                    handleInputChange("iconColor", e.target.value)
-                  }
-                  className="w-12 h-10 border border-gray-300 rounded-md"
-                />
-                <input
-                  type="text"
-                  value={formData.iconColor}
-                  onChange={(e) =>
-                    handleInputChange("iconColor", e.target.value)
-                  }
-                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-accessible focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-accessible"
-                  placeholder="#0d9488"
-                />
-              </div>
-            </FormField>
-
-            <FormField
-              label="Banner Image"
-              helpText="Large banner image for category pages"
-              className="lg:col-span-2"
-            >
-              <ImageUpload
-                images={formData.bannerImage ? [formData.bannerImage] : []}
-                onImagesChange={(images) =>
-                  handleInputChange("bannerImage", images[0] || "")
-                }
-                maxImages={1}
-                maxFileSize={10}
-              />
-            </FormField>
           </div>
-        )}
-
-        {/* SEO & Metadata Tab */}
-        {activeTab === "seo" && (
-          <div className="grid grid-cols-1 gap-6">
-            <FormField
-              label="SEO Title"
-              error={errors.seoTitle}
-              helpText="Title that appears in search engines (recommended: 50-60 characters)"
-            >
-              <input
-                type="text"
-                value={formData.seoTitle}
-                onChange={(e) => handleInputChange("seoTitle", e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-accessible focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-accessible"
-                placeholder="Enter SEO title"
-                maxLength={60}
-              />
-              <div className="text-xs text-gray-500-accessible mt-1">
-                {(formData.seoTitle || "").length}/60 characters
-              </div>
-            </FormField>
-
-            <FormField
-              label="SEO Description"
-              error={errors.seoDescription}
-              helpText="Description that appears in search engines (recommended: 150-160 characters)"
-            >
-              <textarea
-                value={formData.seoDescription}
-                onChange={(e) =>
-                  handleInputChange("seoDescription", e.target.value)
-                }
-                rows={3}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-accessible focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-accessible"
-                placeholder="Enter SEO description"
-                maxLength={160}
-              />
-              <div className="text-xs text-gray-500-accessible mt-1">
-                {(formData.seoDescription || "").length}/160 characters
-              </div>
-            </FormField>
-
-            <FormField
-              label="SEO Keywords"
-              helpText="Separate keywords with commas"
-            >
-              <input
-                type="text"
-                value={formData.seoKeywords?.join(", ") || ""}
-                onChange={(e) =>
-                  handleArrayInput("seoKeywords", e.target.value)
-                }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-accessible focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-accessible"
-                placeholder="e.g., electronics, smartphones, accessories"
-              />
-            </FormField>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Form Actions */}

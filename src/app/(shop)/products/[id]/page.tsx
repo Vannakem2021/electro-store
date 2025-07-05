@@ -24,7 +24,6 @@ import {
   ChevronRightIcon,
   ShoppingBagIcon,
   LoadingButton,
-  LoadingSpinner,
   SkeletonGrid,
 } from "@/components/ui";
 

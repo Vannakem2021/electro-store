@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/contexts/ToastContext";
 import { Navbar, Footer } from "@/components";
 import {
   Button,
@@ -17,19 +20,68 @@ import { formatPrice } from "@/lib/utils";
 const PaymentPage: React.FC = () => {
   const { t } = useTranslation();
   const { isKhmer } = useLanguage();
+  const router = useRouter();
+  const { clearCart } = useCart();
+  const { showSuccess, showError } = useToast();
 
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [billingAddress, setBillingAddress] = useState("same");
   const [discountCode, setDiscountCode] = useState("");
+  const [checkoutData, setCheckoutData] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load checkout data from localStorage
+  useEffect(() => {
+    try {
+      const savedCheckoutData = localStorage.getItem("elecxo-checkout-data");
+      if (savedCheckoutData) {
+        const parsedData = JSON.parse(savedCheckoutData);
+        setCheckoutData(parsedData);
+      } else {
+        // If no checkout data, redirect back to checkout
+        showError("No checkout data found. Please complete checkout first.");
+        router.push("/checkout");
+      }
+    } catch (error) {
+      console.error("Error loading checkout data:", error);
+      showError("Error loading checkout data. Please try again.");
+      router.push("/checkout");
+    }
+  }, [router, showError]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect to success page
-    window.location.href = "/success";
+
+    if (!checkoutData) {
+      showError("No checkout data available. Please complete checkout first.");
+      router.push("/checkout");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Simulate payment processing
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Clear cart and checkout data
+      clearCart();
+      localStorage.removeItem("elecxo-checkout-data");
+
+      showSuccess("Payment successful! Your order has been placed.");
+
+      // Redirect to success page
+      router.push("/success");
+    } catch (error) {
+      console.error("Payment processing failed:", error);
+      showError("Payment failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -386,12 +438,22 @@ const PaymentPage: React.FC = () => {
                   <div className="flex-1">
                     <Button
                       type="submit"
-                      className={`w-full h-12 font-medium bg-teal-700 hover:bg-teal-800 transition-colors duration-200 flex items-center justify-center gap-2 ${
+                      disabled={isSubmitting || !checkoutData}
+                      className={`w-full h-12 font-medium bg-teal-700 hover:bg-teal-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2 ${
                         isKhmer ? "font-khmer" : "font-rubik"
                       }`}
                     >
-                      <ShoppingBagIcon className="w-5 h-5" />
-                      {t("payment.completePayment")}
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Processing Payment...
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBagIcon className="w-5 h-5" />
+                          {t("payment.completePayment")}
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -412,119 +474,56 @@ const PaymentPage: React.FC = () => {
 
               {/* Product Items */}
               <div className="space-y-3 mb-6">
-                {/* MacBook Pro */}
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md border border-gray-200">
-                  <div className="relative w-12 h-12 bg-white rounded-md overflow-hidden border border-gray-200">
-                    <Image
-                      src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=60&h=60&fit=crop"
-                      alt="MacBook Pro"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4
-                      className={`text-sm font-bold text-gray-900 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      MacBook Pro M2 MNEJ3 2022
-                    </h4>
-                    <p
-                      className={`text-xs text-gray-600 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      {t("checkout.qty")}: 1
-                    </p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <span
-                        className={`text-sm text-gray-500 line-through ${
+                {checkoutData?.cartItems?.map((item: any) => (
+                  <div
+                    key={item.product.id}
+                    className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md border border-gray-200"
+                  >
+                    <div className="relative w-12 h-12 bg-white rounded-md overflow-hidden border border-gray-200">
+                      <Image
+                        src={item.product.image}
+                        alt={item.product.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4
+                        className={`text-sm font-bold text-gray-900 ${
                           isKhmer ? "font-khmer" : "font-rubik"
                         }`}
                       >
-                        $1,093.00
-                      </span>
-                      <span
-                        className={`text-sm font-bold text-teal-700 ${
+                        {item.product.name}
+                      </h4>
+                      <p
+                        className={`text-xs text-gray-600 ${
                           isKhmer ? "font-khmer" : "font-rubik"
                         }`}
                       >
-                        $433.00
-                      </span>
+                        {t("checkout.qty")}: {item.quantity}
+                      </p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        {item.product.originalPrice &&
+                          item.product.originalPrice > item.product.price && (
+                            <span
+                              className={`text-sm text-gray-500 line-through ${
+                                isKhmer ? "font-khmer" : "font-rubik"
+                              }`}
+                            >
+                              {formatPrice(item.product.originalPrice)}
+                            </span>
+                          )}
+                        <span
+                          className={`text-sm font-bold text-teal-700 ${
+                            isKhmer ? "font-khmer" : "font-rubik"
+                          }`}
+                        >
+                          {formatPrice(item.product.price)}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Case Sleeve */}
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md border border-gray-200">
-                  <div className="relative w-12 h-12 bg-white rounded-md overflow-hidden border border-gray-200">
-                    <Image
-                      src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=60&h=60&fit=crop"
-                      alt="Case Sleeve"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4
-                      className={`text-sm font-bold text-gray-900 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      Inateck Laptop Case Sleeve
-                    </h4>
-                    <p
-                      className={`text-xs text-gray-600 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      {t("checkout.qty")}: 1
-                    </p>
-                    <span
-                      className={`text-sm font-bold text-teal-700 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      $63.26
-                    </span>
-                  </div>
-                </div>
-
-                {/* Privacy Screen */}
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md border border-gray-200">
-                  <div className="relative w-12 h-12 bg-white rounded-md overflow-hidden border border-gray-200">
-                    <Image
-                      src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=60&h=60&fit=crop"
-                      alt="Privacy Screen"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4
-                      className={`text-sm font-bold text-gray-900 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      Laptop Privacy Screen 13"
-                    </h4>
-                    <p
-                      className={`text-xs text-gray-600 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      {t("checkout.qty")}: 1
-                    </p>
-                    <span
-                      className={`text-sm font-bold text-teal-700 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
-                      $23.26
-                    </span>
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Order Totals */}
@@ -542,24 +541,9 @@ const PaymentPage: React.FC = () => {
                       isKhmer ? "font-khmer" : "font-rubik"
                     }`}
                   >
-                    $519.52
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span
-                    className={`text-gray-600 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
-                    {t("cart.discount")}
-                  </span>
-                  <span
-                    className={`font-semibold text-red-600 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
-                    -$111.87
+                    {checkoutData
+                      ? formatPrice(checkoutData.subtotal)
+                      : "$0.00"}
                   </span>
                 </div>
 
@@ -576,7 +560,9 @@ const PaymentPage: React.FC = () => {
                       isKhmer ? "font-khmer" : "font-rubik"
                     }`}
                   >
-                    $22.50
+                    {checkoutData
+                      ? formatPrice(checkoutData.deliveryPrice)
+                      : "$0.00"}
                   </span>
                 </div>
 
@@ -594,7 +580,7 @@ const PaymentPage: React.FC = () => {
                         isKhmer ? "font-khmer" : "font-rubik"
                       }`}
                     >
-                      $543.02
+                      {checkoutData ? formatPrice(checkoutData.total) : "$0.00"}
                     </span>
                   </div>
                 </div>

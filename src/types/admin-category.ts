@@ -9,20 +9,20 @@ export interface AdminCategory extends Category {
   seoDescription?: string;
   seoKeywords?: string[];
   metafields?: Record<string, any>;
-  
+
   // Audit fields
   createdBy?: string;
   updatedBy?: string;
-  
+
   // Statistics
   totalProducts?: number;
   activeProducts?: number;
   inactiveProducts?: number;
-  
+
   // Hierarchy
   level?: number;
   path?: string; // e.g., "Electronics > Smartphones"
-  
+
   // Display settings
   showInNavigation?: boolean;
   featuredOrder?: number;
@@ -31,31 +31,17 @@ export interface AdminCategory extends Category {
 }
 
 /**
- * Category form data interface
+ * Category form data interface (simplified)
  */
 export interface CategoryFormData {
   name: string;
   description: string;
   image: string;
-  icon?: string;
   slug: string;
   isActive: boolean;
   sortOrder: number;
   parentId?: string;
-  
-  // SEO fields
-  seoTitle?: string;
-  seoDescription?: string;
-  seoKeywords?: string[];
-  
-  // Display settings
   showInNavigation?: boolean;
-  featuredOrder?: number;
-  bannerImage?: string;
-  iconColor?: string;
-  
-  // Meta fields
-  metafields?: Record<string, any>;
 }
 
 /**
@@ -122,9 +108,9 @@ export interface CategoryValidationErrors {
 /**
  * Category bulk operation types
  */
-export type CategoryBulkAction = 
+export type CategoryBulkAction =
   | "activate"
-  | "deactivate" 
+  | "deactivate"
   | "delete"
   | "updateParent"
   | "updateSortOrder"

@@ -1,11 +1,24 @@
-import { products, categories } from "./index";
-import { AdminProduct, ProductStats, ProductFilters, ProductSortOptions, InventoryAlert } from "@/types/admin-product";
+import productsData from "./products.json";
+import categoriesData from "./categories.json";
+import { Product } from "@/types/product";
+import { Category } from "@/types/category";
+
+// Convert JSON data to typed arrays
+const products: Product[] = productsData as Product[];
+const categories: Category[] = categoriesData as Category[];
+import {
+  AdminProduct,
+  ProductStats,
+  ProductFilters,
+  ProductSortOptions,
+  InventoryAlert,
+} from "@/types/admin-product";
 import { Product } from "@/types/product";
 
 // Convert regular products to admin products with additional fields
 export const adminProducts: AdminProduct[] = products.map((product) => ({
   ...product,
-  sku: `SKU-${product.id.padStart(6, '0')}`,
+  sku: `SKU-${product.id.padStart(6, "0")}`,
   costPrice: Math.round(product.price * 0.6), // 40% markup
   comparePrice: product.originalPrice,
   weight: getProductWeight(product.categoryId),
@@ -43,7 +56,10 @@ function getProductWeight(categoryId: string): number {
 }
 
 function getProductDimensions(categoryId: string) {
-  const dimensions: Record<string, { length: number; width: number; height: number; unit: "cm" | "in" }> = {
+  const dimensions: Record<
+    string,
+    { length: number; width: number; height: number; unit: "cm" | "in" }
+  > = {
     "1": { length: 10, width: 8, height: 2, unit: "cm" },
     "2": { length: 15, width: 12, height: 8, unit: "cm" },
     "3": { length: 35, width: 25, height: 2, unit: "cm" },
@@ -51,7 +67,9 @@ function getProductDimensions(categoryId: string) {
     "5": { length: 40, width: 30, height: 15, unit: "cm" },
     "6": { length: 5, width: 4, height: 1, unit: "cm" },
   };
-  return dimensions[categoryId] || { length: 20, width: 15, height: 5, unit: "cm" };
+  return (
+    dimensions[categoryId] || { length: 20, width: 15, height: 5, unit: "cm" }
+  );
 }
 
 function getHSCode(categoryId: string): string {
@@ -68,14 +86,14 @@ function getHSCode(categoryId: string): string {
 
 function getCountryOfOrigin(brand: string): string {
   const origins: Record<string, string> = {
-    "Apple": "United States",
-    "Samsung": "South Korea",
-    "Sony": "Japan",
-    "Canon": "Japan",
-    "LG": "South Korea",
-    "Microsoft": "United States",
-    "Nintendo": "Japan",
-    "Google": "United States",
+    Apple: "United States",
+    Samsung: "South Korea",
+    Sony: "Japan",
+    Canon: "Japan",
+    LG: "South Korea",
+    Microsoft: "United States",
+    Nintendo: "Japan",
+    Google: "United States",
   };
   return origins[brand] || "China";
 }
@@ -84,21 +102,24 @@ function getCountryOfOrigin(brand: string): string {
 export const getProductStats = (): ProductStats => {
   const stats: ProductStats = {
     total: adminProducts.length,
-    active: adminProducts.filter(p => p.isActive).length,
-    inactive: adminProducts.filter(p => !p.isActive).length,
-    featured: adminProducts.filter(p => p.isFeatured).length,
-    inStock: adminProducts.filter(p => p.inStock && p.stockCount > 0).length,
-    lowStock: adminProducts.filter(p => p.inStock && p.stockCount <= p.lowStockThreshold).length,
-    outOfStock: adminProducts.filter(p => !p.inStock || p.stockCount === 0).length,
+    active: adminProducts.filter((p) => p.isActive).length,
+    inactive: adminProducts.filter((p) => !p.isActive).length,
+    featured: adminProducts.filter((p) => p.isFeatured).length,
+    inStock: adminProducts.filter((p) => p.inStock && p.stockCount > 0).length,
+    lowStock: adminProducts.filter(
+      (p) => p.inStock && p.stockCount <= p.lowStockThreshold
+    ).length,
+    outOfStock: adminProducts.filter((p) => !p.inStock || p.stockCount === 0)
+      .length,
     byCategory: {},
     byBrand: {},
-    recentlyAdded: adminProducts.filter(p => {
+    recentlyAdded: adminProducts.filter((p) => {
       const createdDate = new Date(p.createdAt);
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
       return createdDate > weekAgo;
     }).length,
-    recentlyUpdated: adminProducts.filter(p => {
+    recentlyUpdated: adminProducts.filter((p) => {
       const updatedDate = new Date(p.updatedAt);
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
@@ -107,13 +128,13 @@ export const getProductStats = (): ProductStats => {
   };
 
   // Calculate by category
-  adminProducts.forEach(product => {
+  adminProducts.forEach((product) => {
     const category = product.category;
     stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
   });
 
   // Calculate by brand
-  adminProducts.forEach(product => {
+  adminProducts.forEach((product) => {
     const brand = product.brand;
     stats.byBrand[brand] = (stats.byBrand[brand] || 0) + 1;
   });
@@ -123,11 +144,12 @@ export const getProductStats = (): ProductStats => {
 
 // Filter products
 export const filterProducts = (filters: ProductFilters): AdminProduct[] => {
-  return adminProducts.filter(product => {
+  return adminProducts.filter((product) => {
     // Search filter
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      const searchableText = `${product.name} ${product.description} ${product.brand} ${product.sku}`.toLowerCase();
+      const searchableText =
+        `${product.name} ${product.description} ${product.brand} ${product.sku}`.toLowerCase();
       if (!searchableText.includes(searchTerm)) {
         return false;
       }
@@ -151,13 +173,29 @@ export const filterProducts = (filters: ProductFilters): AdminProduct[] => {
 
     // Stock filter
     if (filters.stock && filters.stock !== "all") {
-      if (filters.stock === "in-stock" && (!product.inStock || product.stockCount === 0)) return false;
-      if (filters.stock === "low-stock" && (product.stockCount > product.lowStockThreshold)) return false;
-      if (filters.stock === "out-of-stock" && (product.inStock && product.stockCount > 0)) return false;
+      if (
+        filters.stock === "in-stock" &&
+        (!product.inStock || product.stockCount === 0)
+      )
+        return false;
+      if (
+        filters.stock === "low-stock" &&
+        product.stockCount > product.lowStockThreshold
+      )
+        return false;
+      if (
+        filters.stock === "out-of-stock" &&
+        product.inStock &&
+        product.stockCount > 0
+      )
+        return false;
     }
 
     // Featured filter
-    if (filters.featured !== undefined && product.isFeatured !== filters.featured) {
+    if (
+      filters.featured !== undefined &&
+      product.isFeatured !== filters.featured
+    ) {
       return false;
     }
 
@@ -182,7 +220,9 @@ export const filterProducts = (filters: ProductFilters): AdminProduct[] => {
     // Tags filter
     if (filters.tags && filters.tags.length > 0) {
       const productTags = product.tags || [];
-      const hasMatchingTag = filters.tags.some(tag => productTags.includes(tag));
+      const hasMatchingTag = filters.tags.some((tag) =>
+        productTags.includes(tag)
+      );
       if (!hasMatchingTag) return false;
     }
 
@@ -191,7 +231,10 @@ export const filterProducts = (filters: ProductFilters): AdminProduct[] => {
 };
 
 // Sort products
-export const sortProducts = (products: AdminProduct[], sortOptions: ProductSortOptions): AdminProduct[] => {
+export const sortProducts = (
+  products: AdminProduct[],
+  sortOptions: ProductSortOptions
+): AdminProduct[] => {
   return [...products].sort((a, b) => {
     let comparison = 0;
 
@@ -206,10 +249,12 @@ export const sortProducts = (products: AdminProduct[], sortOptions: ProductSortO
         comparison = a.stockCount - b.stockCount;
         break;
       case "createdAt":
-        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        comparison =
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         break;
       case "updatedAt":
-        comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+        comparison =
+          new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
         break;
       case "category":
         comparison = a.category.localeCompare(b.category);
@@ -232,7 +277,7 @@ export const sortProducts = (products: AdminProduct[], sortOptions: ProductSortO
 export const getInventoryAlerts = (): InventoryAlert[] => {
   const alerts: InventoryAlert[] = [];
 
-  adminProducts.forEach(product => {
+  adminProducts.forEach((product) => {
     if (!product.inStock || product.stockCount === 0) {
       alerts.push({
         id: `alert-${product.id}-out`,
@@ -253,7 +298,10 @@ export const getInventoryAlerts = (): InventoryAlert[] => {
         type: "low-stock",
         currentStock: product.stockCount,
         threshold: product.lowStockThreshold,
-        severity: product.stockCount <= product.lowStockThreshold / 2 ? "high" : "medium",
+        severity:
+          product.stockCount <= product.lowStockThreshold / 2
+            ? "high"
+            : "medium",
         createdAt: new Date(),
         acknowledged: false,
       });
@@ -268,68 +316,95 @@ export const getInventoryAlerts = (): InventoryAlert[] => {
 
 // Get product by ID
 export const getAdminProductById = (id: string): AdminProduct | undefined => {
-  return adminProducts.find(product => product.id === id);
+  return adminProducts.find((product) => product.id === id);
 };
 
 // Get unique brands
 export const getUniqueBrands = (): string[] => {
-  const brands = new Set(adminProducts.map(product => product.brand));
+  const brands = new Set(adminProducts.map((product) => product.brand));
   return Array.from(brands).sort();
 };
 
 // Get unique tags
 export const getUniqueTags = (): string[] => {
   const tags = new Set<string>();
-  adminProducts.forEach(product => {
+  adminProducts.forEach((product) => {
     if (product.tags) {
-      product.tags.forEach(tag => tags.add(tag));
+      product.tags.forEach((tag) => tags.add(tag));
     }
   });
   return Array.from(tags).sort();
 };
 
 // Mock functions for CRUD operations (in real app, these would be API calls)
-export const createProduct = async (productData: Partial<AdminProduct>): Promise<AdminProduct> => {
+export const createProduct = async (
+  productData: Partial<AdminProduct>
+): Promise<AdminProduct> => {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  // Find category name from categoryId
+  const category = categories.find((c) => c.id === productData.categoryId);
+
   const newProduct: AdminProduct = {
     id: (adminProducts.length + 1).toString(),
     name: productData.name || "",
     description: productData.description || "",
     price: productData.price || 0,
     image: productData.image || "",
-    category: productData.category || "",
+    images: productData.images || [],
+    category: category?.name || "",
     categoryId: productData.categoryId || "",
     brand: productData.brand || "",
+    tags: productData.tags || [],
     rating: 0,
     reviewCount: 0,
-    inStock: productData.inStock ?? true,
+    inStock: productData.trackInventory
+      ? (productData.stockCount || 0) > 0
+      : true,
     stockCount: productData.stockCount || 0,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    // Admin-specific fields
+    // Admin-specific fields with defaults for removed fields
     sku: productData.sku || `SKU-${Date.now()}`,
+    costPrice: productData.price ? Math.round(productData.price * 0.6) : 0,
+    comparePrice: productData.comparePrice || 0,
+    weight: getProductWeight(productData.categoryId || ""),
+    dimensions: getProductDimensions(productData.categoryId || ""),
+    seoTitle: `${productData.name} - Buy Online at Elecxo`,
+    seoDescription: productData.description?.substring(0, 160) || "",
+    seoKeywords: productData.tags || [],
     isActive: productData.isActive ?? true,
     isVisible: productData.isVisible ?? true,
-    sortOrder: productData.sortOrder || adminProducts.length + 1,
+    sortOrder: adminProducts.length + 1,
     lowStockThreshold: productData.lowStockThreshold || 10,
     trackInventory: productData.trackInventory ?? true,
     allowBackorder: productData.allowBackorder ?? false,
-    requiresShipping: productData.requiresShipping ?? true,
-    taxable: productData.taxable ?? true,
-    ...productData,
+    requiresShipping: true,
+    taxable: true,
+    vendor: productData.brand || "",
+    barcode: `${Date.now()}${Math.random().toString().substr(2, 8)}`,
+    hsCode: getHSCode(productData.categoryId || ""),
+    countryOfOrigin: getCountryOfOrigin(productData.brand || ""),
+    publishedAt: new Date().toISOString(),
+    metafields: {},
+    isFeatured: productData.isFeatured ?? false,
+    isBestSeller: productData.isBestSeller ?? false,
+    isNew: productData.isNew ?? false,
   };
 
   adminProducts.push(newProduct);
   return newProduct;
 };
 
-export const updateProduct = async (id: string, productData: Partial<AdminProduct>): Promise<AdminProduct> => {
+export const updateProduct = async (
+  id: string,
+  productData: Partial<AdminProduct>
+): Promise<AdminProduct> => {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  const index = adminProducts.findIndex(product => product.id === id);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const index = adminProducts.findIndex((product) => product.id === id);
   if (index === -1) {
     throw new Error("Product not found");
   }
@@ -346,9 +421,9 @@ export const updateProduct = async (id: string, productData: Partial<AdminProduc
 
 export const deleteProduct = async (id: string): Promise<void> => {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  const index = adminProducts.findIndex(product => product.id === id);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const index = adminProducts.findIndex((product) => product.id === id);
   if (index === -1) {
     throw new Error("Product not found");
   }

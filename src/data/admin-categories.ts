@@ -1,12 +1,12 @@
 import { categories, products } from "./index";
-import { 
-  AdminCategory, 
-  CategoryFormData, 
-  CategoryFilters, 
+import {
+  AdminCategory,
+  CategoryFormData,
+  CategoryFilters,
   CategorySortOptions,
   CategoryStats,
   CategoryTreeNode,
-  CategoryValidationErrors
+  CategoryValidationErrors,
 } from "@/types/admin-category";
 
 // Convert regular categories to admin categories with additional fields
@@ -18,9 +18,13 @@ export const adminCategories: AdminCategory[] = categories.map((category) => ({
   metafields: {},
   createdBy: "system",
   updatedBy: "system",
-  totalProducts: products.filter(p => p.categoryId === category.id).length,
-  activeProducts: products.filter(p => p.categoryId === category.id && p.inStock).length,
-  inactiveProducts: products.filter(p => p.categoryId === category.id && !p.inStock).length,
+  totalProducts: products.filter((p) => p.categoryId === category.id).length,
+  activeProducts: products.filter(
+    (p) => p.categoryId === category.id && p.inStock
+  ).length,
+  inactiveProducts: products.filter(
+    (p) => p.categoryId === category.id && !p.inStock
+  ).length,
   level: 0,
   path: category.name,
   showInNavigation: true,
@@ -40,53 +44,68 @@ export const getAdminCategories = (): AdminCategory[] => {
  * Get category by ID
  */
 export const getAdminCategoryById = (id: string): AdminCategory | undefined => {
-  return adminCategories.find(category => category.id === id);
+  return adminCategories.find((category) => category.id === id);
 };
 
 /**
  * Filter categories based on criteria
  */
 export const filterCategories = (
-  categories: AdminCategory[], 
+  categories: AdminCategory[],
   filters: CategoryFilters
 ): AdminCategory[] => {
   let filtered = [...categories];
 
   if (filters.search) {
     const searchLower = filters.search.toLowerCase();
-    filtered = filtered.filter(category =>
-      category.name.toLowerCase().includes(searchLower) ||
-      category.description.toLowerCase().includes(searchLower) ||
-      category.slug.toLowerCase().includes(searchLower)
+    filtered = filtered.filter(
+      (category) =>
+        category.name.toLowerCase().includes(searchLower) ||
+        category.description.toLowerCase().includes(searchLower) ||
+        category.slug.toLowerCase().includes(searchLower)
     );
   }
 
   if (filters.isActive !== undefined) {
-    filtered = filtered.filter(category => category.isActive === filters.isActive);
+    filtered = filtered.filter(
+      (category) => category.isActive === filters.isActive
+    );
   }
 
   if (filters.parentId !== undefined) {
-    filtered = filtered.filter(category => category.parentId === filters.parentId);
+    filtered = filtered.filter(
+      (category) => category.parentId === filters.parentId
+    );
   }
 
   if (filters.showInNavigation !== undefined) {
-    filtered = filtered.filter(category => category.showInNavigation === filters.showInNavigation);
+    filtered = filtered.filter(
+      (category) => category.showInNavigation === filters.showInNavigation
+    );
   }
 
   if (filters.hasProducts !== undefined) {
     if (filters.hasProducts) {
-      filtered = filtered.filter(category => (category.totalProducts || 0) > 0);
+      filtered = filtered.filter(
+        (category) => (category.totalProducts || 0) > 0
+      );
     } else {
-      filtered = filtered.filter(category => (category.totalProducts || 0) === 0);
+      filtered = filtered.filter(
+        (category) => (category.totalProducts || 0) === 0
+      );
     }
   }
 
   if (filters.minProductCount !== undefined) {
-    filtered = filtered.filter(category => (category.totalProducts || 0) >= filters.minProductCount);
+    filtered = filtered.filter(
+      (category) => (category.totalProducts || 0) >= filters.minProductCount
+    );
   }
 
   if (filters.maxProductCount !== undefined) {
-    filtered = filtered.filter(category => (category.totalProducts || 0) <= filters.maxProductCount);
+    filtered = filtered.filter(
+      (category) => (category.totalProducts || 0) <= filters.maxProductCount
+    );
   }
 
   return filtered;
@@ -96,7 +115,7 @@ export const filterCategories = (
  * Sort categories
  */
 export const sortCategories = (
-  categories: AdminCategory[], 
+  categories: AdminCategory[],
   sortOptions: CategorySortOptions
 ): AdminCategory[] => {
   return [...categories].sort((a, b) => {
@@ -127,21 +146,27 @@ export const sortCategories = (
 export const getCategoryStats = (): CategoryStats => {
   const categories = getAdminCategories();
   const totalCategories = categories.length;
-  const activeCategories = categories.filter(c => c.isActive).length;
+  const activeCategories = categories.filter((c) => c.isActive).length;
   const inactiveCategories = totalCategories - activeCategories;
-  const categoriesWithProducts = categories.filter(c => (c.totalProducts || 0) > 0).length;
+  const categoriesWithProducts = categories.filter(
+    (c) => (c.totalProducts || 0) > 0
+  ).length;
   const categoriesWithoutProducts = totalCategories - categoriesWithProducts;
-  
-  const totalProducts = categories.reduce((sum, c) => sum + (c.totalProducts || 0), 0);
-  const averageProductsPerCategory = totalCategories > 0 ? totalProducts / totalCategories : 0;
+
+  const totalProducts = categories.reduce(
+    (sum, c) => sum + (c.totalProducts || 0),
+    0
+  );
+  const averageProductsPerCategory =
+    totalCategories > 0 ? totalProducts / totalCategories : 0;
 
   const topCategoriesByProducts = categories
-    .filter(c => (c.totalProducts || 0) > 0)
+    .filter((c) => (c.totalProducts || 0) > 0)
     .sort((a, b) => (b.totalProducts || 0) - (a.totalProducts || 0))
     .slice(0, 5)
-    .map(category => ({
+    .map((category) => ({
       category,
-      productCount: category.totalProducts || 0
+      productCount: category.totalProducts || 0,
     }));
 
   return {
@@ -150,34 +175,37 @@ export const getCategoryStats = (): CategoryStats => {
     inactiveCategories,
     categoriesWithProducts,
     categoriesWithoutProducts,
-    averageProductsPerCategory: Math.round(averageProductsPerCategory * 100) / 100,
-    topCategoriesByProducts
+    averageProductsPerCategory:
+      Math.round(averageProductsPerCategory * 100) / 100,
+    topCategoriesByProducts,
   };
 };
 
 /**
  * Build category tree for hierarchical display
  */
-export const buildCategoryTree = (categories: AdminCategory[]): CategoryTreeNode[] => {
+export const buildCategoryTree = (
+  categories: AdminCategory[]
+): CategoryTreeNode[] => {
   const categoryMap = new Map<string, CategoryTreeNode>();
   const rootCategories: CategoryTreeNode[] = [];
 
   // Convert categories to tree nodes
-  categories.forEach(category => {
+  categories.forEach((category) => {
     const node: CategoryTreeNode = {
       ...category,
       children: [],
       depth: 0,
       hasChildren: false,
-      isExpanded: false
+      isExpanded: false,
     };
     categoryMap.set(category.id, node);
   });
 
   // Build tree structure
-  categories.forEach(category => {
+  categories.forEach((category) => {
     const node = categoryMap.get(category.id)!;
-    
+
     if (category.parentId) {
       const parent = categoryMap.get(category.parentId);
       if (parent) {
@@ -196,7 +224,7 @@ export const buildCategoryTree = (categories: AdminCategory[]): CategoryTreeNode
   // Sort children by sortOrder
   const sortChildren = (nodes: CategoryTreeNode[]) => {
     nodes.sort((a, b) => a.sortOrder - b.sortOrder);
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       if (node.children.length > 0) {
         sortChildren(node.children);
       }
@@ -210,7 +238,9 @@ export const buildCategoryTree = (categories: AdminCategory[]): CategoryTreeNode
 /**
  * Validate category data
  */
-export const validateCategory = (data: CategoryFormData): CategoryValidationErrors => {
+export const validateCategory = (
+  data: CategoryFormData
+): CategoryValidationErrors => {
   const errors: CategoryValidationErrors = {};
 
   if (!data.name?.trim()) {
@@ -232,7 +262,8 @@ export const validateCategory = (data: CategoryFormData): CategoryValidationErro
   if (!data.slug?.trim()) {
     errors.slug = "Category slug is required";
   } else if (!/^[a-z0-9-]+$/.test(data.slug)) {
-    errors.slug = "Slug can only contain lowercase letters, numbers, and hyphens";
+    errors.slug =
+      "Slug can only contain lowercase letters, numbers, and hyphens";
   }
 
   if (!data.image?.trim()) {
@@ -260,22 +291,22 @@ export const validateCategory = (data: CategoryFormData): CategoryValidationErro
 export const generateSlug = (name: string, excludeId?: string): string => {
   let baseSlug = name
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .trim();
 
   // Check for uniqueness
   let slug = baseSlug;
   let counter = 1;
-  
+
   while (true) {
-    const existing = adminCategories.find(c => 
-      c.slug === slug && c.id !== excludeId
+    const existing = adminCategories.find(
+      (c) => c.slug === slug && c.id !== excludeId
     );
-    
+
     if (!existing) break;
-    
+
     slug = `${baseSlug}-${counter}`;
     counter++;
   }
@@ -284,16 +315,18 @@ export const generateSlug = (name: string, excludeId?: string): string => {
 };
 
 // Mock CRUD operations (in real app, these would be API calls)
-export const createCategory = async (categoryData: CategoryFormData): Promise<AdminCategory> => {
+export const createCategory = async (
+  categoryData: CategoryFormData
+): Promise<AdminCategory> => {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const newCategory: AdminCategory = {
     id: Date.now().toString(),
     name: categoryData.name,
     description: categoryData.description,
     image: categoryData.image,
-    icon: categoryData.icon,
+    icon: "package", // Default icon
     slug: categoryData.slug,
     productCount: 0,
     isActive: categoryData.isActive,
@@ -301,12 +334,12 @@ export const createCategory = async (categoryData: CategoryFormData): Promise<Ad
     parentId: categoryData.parentId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    
-    // Admin fields
-    seoTitle: categoryData.seoTitle || `${categoryData.name} - Shop at Elecxo`,
-    seoDescription: categoryData.seoDescription || categoryData.description,
-    seoKeywords: categoryData.seoKeywords || [],
-    metafields: categoryData.metafields || {},
+
+    // Admin fields with defaults for removed fields
+    seoTitle: `${categoryData.name} - Shop at Elecxo`,
+    seoDescription: categoryData.description,
+    seoKeywords: [categoryData.name.toLowerCase(), "electronics", "shop"],
+    metafields: {},
     createdBy: "current-user", // In real app, get from auth context
     updatedBy: "current-user",
     totalProducts: 0,
@@ -315,22 +348,25 @@ export const createCategory = async (categoryData: CategoryFormData): Promise<Ad
     level: 0,
     path: categoryData.name,
     showInNavigation: categoryData.showInNavigation ?? true,
-    featuredOrder: categoryData.featuredOrder,
-    bannerImage: categoryData.bannerImage,
-    iconColor: categoryData.iconColor || "#0d9488",
+    featuredOrder: 0, // Default to not featured
+    bannerImage: categoryData.image, // Use main image as banner
+    iconColor: "#0d9488", // Default teal color
   };
 
   // Add to mock data
   adminCategories.push(newCategory);
-  
+
   return newCategory;
 };
 
-export const updateCategory = async (id: string, categoryData: CategoryFormData): Promise<AdminCategory> => {
+export const updateCategory = async (
+  id: string,
+  categoryData: CategoryFormData
+): Promise<AdminCategory> => {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 800));
+  await new Promise((resolve) => setTimeout(resolve, 800));
 
-  const index = adminCategories.findIndex(c => c.id === id);
+  const index = adminCategories.findIndex((c) => c.id === id);
   if (index === -1) {
     throw new Error("Category not found");
   }
@@ -347,7 +383,7 @@ export const updateCategory = async (id: string, categoryData: CategoryFormData)
     sortOrder: categoryData.sortOrder,
     parentId: categoryData.parentId,
     updatedAt: new Date().toISOString(),
-    
+
     // Admin fields
     seoTitle: categoryData.seoTitle,
     seoDescription: categoryData.seoDescription,
@@ -366,23 +402,27 @@ export const updateCategory = async (id: string, categoryData: CategoryFormData)
 
 export const deleteCategory = async (id: string): Promise<void> => {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
-  const index = adminCategories.findIndex(c => c.id === id);
+  const index = adminCategories.findIndex((c) => c.id === id);
   if (index === -1) {
     throw new Error("Category not found");
   }
 
   // Check if category has products
-  const hasProducts = products.some(p => p.categoryId === id);
+  const hasProducts = products.some((p) => p.categoryId === id);
   if (hasProducts) {
-    throw new Error("Cannot delete category with products. Please reassign products first.");
+    throw new Error(
+      "Cannot delete category with products. Please reassign products first."
+    );
   }
 
   // Check if category has children
-  const hasChildren = adminCategories.some(c => c.parentId === id);
+  const hasChildren = adminCategories.some((c) => c.parentId === id);
   if (hasChildren) {
-    throw new Error("Cannot delete category with subcategories. Please delete or reassign subcategories first.");
+    throw new Error(
+      "Cannot delete category with subcategories. Please delete or reassign subcategories first."
+    );
   }
 
   adminCategories.splice(index, 1);

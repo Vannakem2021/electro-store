@@ -4,16 +4,16 @@
  */
 
 // Order Status Enums
-export type OrderStatus = 
+export type OrderStatus =
   | "pending"
-  | "confirmed" 
+  | "confirmed"
   | "processing"
   | "shipped"
   | "delivered"
   | "cancelled"
   | "refunded";
 
-export type PaymentStatus = 
+export type PaymentStatus =
   | "pending"
   | "paid"
   | "partially_paid"
@@ -21,7 +21,7 @@ export type PaymentStatus =
   | "refunded"
   | "partially_refunded";
 
-export type FulfillmentStatus = 
+export type FulfillmentStatus =
   | "unfulfilled"
   | "partially_fulfilled"
   | "fulfilled"
@@ -29,7 +29,7 @@ export type FulfillmentStatus =
   | "delivered"
   | "returned";
 
-export type PaymentMethod = 
+export type PaymentMethod =
   | "credit_card"
   | "debit_card"
   | "aba_pay"
@@ -37,7 +37,7 @@ export type PaymentMethod =
   | "cash_on_delivery"
   | "digital_wallet";
 
-// Address Interface
+// Address Interface (Legacy - kept for backward compatibility)
 export interface Address {
   id?: string;
   firstName: string;
@@ -50,6 +50,34 @@ export interface Address {
   postalCode: string;
   country: string;
   phone?: string;
+}
+
+// New delivery-specific address interface
+export interface DeliveryAddress {
+  id?: string;
+  type: "local" | "logistics";
+  recipientName: string;
+  phone: string;
+
+  // For local delivery (Phnom Penh)
+  localAddress?: {
+    houseNumber: string;
+    streetNumber?: string;
+    streetName?: string;
+    district: string; // Khan in Phnom Penh
+    additionalDetails?: string;
+    landmark?: string;
+  };
+
+  // For logistics delivery (other provinces)
+  logisticsAddress?: {
+    province: string;
+    city: string;
+    address: string;
+    postalCode?: string;
+    additionalDetails?: string;
+    logisticsCompanyId: string;
+  };
 }
 
 // Order Item Interface
@@ -92,9 +120,9 @@ export interface PaymentInfo {
   billingAddress?: Address;
 }
 
-// Shipping Information
+// Shipping Information (Updated for new delivery system)
 export interface ShippingInfo {
-  method: string;
+  method: "local" | "logistics";
   cost: number;
   estimatedDelivery?: Date;
   trackingNumber?: string;
@@ -103,6 +131,23 @@ export interface ShippingInfo {
   service?: string;
   shippedAt?: Date;
   deliveredAt?: Date;
+
+  // New delivery-specific fields
+  deliveryType: "local" | "logistics";
+  logisticsCompanyId?: string;
+  logisticsCompanyName?: string;
+  deliveryStatus:
+    | "pending"
+    | "confirmed"
+    | "picked_up"
+    | "in_transit"
+    | "out_for_delivery"
+    | "delivered"
+    | "failed"
+    | "returned";
+  deliveryInstructions?: string;
+  deliveryAttempts?: number;
+  lastDeliveryAttempt?: Date;
 }
 
 // Order Discount
@@ -143,15 +188,15 @@ export interface AdminOrder {
   customerEmail: string;
   customerName: string;
   customerPhone?: string;
-  
+
   // Order Status
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   fulfillmentStatus: FulfillmentStatus;
-  
+
   // Order Items
   items: OrderItem[];
-  
+
   // Financial Information
   subtotal: number;
   taxTotal: number;
@@ -159,31 +204,34 @@ export interface AdminOrder {
   discountTotal: number;
   total: number;
   currency: string;
-  
+
   // Addresses
-  shippingAddress: Address;
+  shippingAddress: Address; // Legacy field for backward compatibility
   billingAddress: Address;
-  
+
+  // New delivery address
+  deliveryAddress?: DeliveryAddress;
+
   // Payment & Shipping
   paymentInfo: PaymentInfo;
   shippingInfo?: ShippingInfo;
-  
+
   // Discounts & Promotions
   discounts: OrderDiscount[];
-  
+
   // Notes & Communication
   notes: OrderNote[];
   customerNotes?: string;
-  
+
   // Timeline & History
   timeline: OrderTimelineEvent[];
-  
+
   // Metadata
   source: "online" | "admin" | "pos" | "api";
   tags: string[];
   riskLevel: "low" | "medium" | "high";
   fraudScore?: number;
-  
+
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
@@ -191,13 +239,13 @@ export interface AdminOrder {
   shippedAt?: Date;
   deliveredAt?: Date;
   cancelledAt?: Date;
-  
+
   // Additional Fields
   referrerUrl?: string;
   landingPageUrl?: string;
   browserInfo?: string;
   ipAddress?: string;
-  
+
   // Admin Fields
   assignedTo?: string;
   priority: "low" | "normal" | "high" | "urgent";
@@ -223,7 +271,13 @@ export interface OrderFilters {
 
 // Order Sort Options
 export interface OrderSortOptions {
-  field: "orderNumber" | "customerName" | "total" | "status" | "createdAt" | "updatedAt";
+  field:
+    | "orderNumber"
+    | "customerName"
+    | "total"
+    | "status"
+    | "createdAt"
+    | "updatedAt";
   direction: "asc" | "desc";
 }
 
@@ -245,7 +299,13 @@ export interface OrderStats {
 
 // Order Actions
 export interface OrderAction {
-  type: "fulfill" | "ship" | "deliver" | "cancel" | "refund" | "capture_payment";
+  type:
+    | "fulfill"
+    | "ship"
+    | "deliver"
+    | "cancel"
+    | "refund"
+    | "capture_payment";
   orderId: string;
   items?: string[]; // For partial fulfillment
   amount?: number; // For partial refunds

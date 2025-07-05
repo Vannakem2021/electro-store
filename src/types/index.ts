@@ -3,6 +3,8 @@ export * from "./category";
 export * from "./admin";
 export * from "./admin-product";
 export * from "./admin-order";
+export * from "./admin-analytics";
+export * from "./delivery";
 
 export interface User {
   id: string;

@@ -22,7 +22,6 @@ import {
   ClockIcon,
   TruckIcon,
   TrendingUpIcon,
-  ShieldIcon,
 } from "@/components/ui/Icons";
 
 interface AdminSidebarProps {
@@ -145,13 +144,6 @@ const navigationItems: AdminNavItem[] = [
     icon: "cog",
     permission: "settings:read",
   },
-  {
-    id: "permissions",
-    label: "Permissions Demo",
-    href: "/admin/permissions",
-    icon: "shield",
-    permission: "settings:read",
-  },
 ];
 
 // Icon mapping
@@ -168,7 +160,6 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   clock: ClockIcon,
   truck: TruckIcon,
   "trending-up": TrendingUpIcon,
-  shield: ShieldIcon,
 };
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
@@ -176,7 +167,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
   const { isKhmer } = useLanguage();
   const { hasPermission, user } = useAdmin();
   const pathname = usePathname();
-  const [expandedItems, setExpandedItems] = useState<string[]>(["products"]);
+  const [expandedItems, setExpandedItems] = useState<string[]>(() => {
+    const defaultExpanded = ["products"];
+    // Auto-expand analytics if on analytics pages
+    if (pathname.startsWith("/admin/analytics")) {
+      defaultExpanded.push("analytics");
+    }
+    return defaultExpanded;
+  });
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems((prev) =>
@@ -271,10 +269,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
     <div
       className={`bg-white border-r border-gray-200 transition-all duration-300 ${
         collapsed ? "w-16" : "w-64"
-      } flex flex-col h-full`}
+      } flex flex-col h-screen`}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
         {!collapsed && (
           <Link
             href="/admin"
@@ -310,7 +308,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
 
       {/* User Info */}
       {!collapsed && user && (
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 flex-shrink-0">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
               {user.firstName.charAt(0)}

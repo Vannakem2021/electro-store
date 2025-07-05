@@ -11,4 +11,5 @@ export { default as FormField } from "./FormField";
 export { default as ImageUpload } from "./ImageUpload";
 export { default as ProductForm } from "./ProductForm";
 export { default as CategoryForm } from "./CategoryForm";
+export { default as CustomerForm } from "./CustomerForm";
 export { default as ConfirmationModal } from "./ConfirmationModal";

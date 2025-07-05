@@ -32,68 +32,38 @@ export interface AdminProduct extends Product {
   metafields?: Record<string, any>;
 }
 
-// Product form data for creating/editing
+// Product form data for creating/editing (simplified)
 export interface ProductFormData {
   // Basic Information
   name: string;
   description: string;
   sku?: string;
-  
+
   // Pricing
   price: number;
   comparePrice?: number;
-  costPrice?: number;
-  
+
   // Inventory
   trackInventory: boolean;
   stockCount: number;
   lowStockThreshold: number;
   allowBackorder: boolean;
-  
+
   // Organization
   categoryId: string;
   brand: string;
-  vendor?: string;
   tags: string[];
-  
+
   // Media
   image: string;
   images: string[];
-  
-  // Shipping
-  requiresShipping: boolean;
-  weight?: number;
-  dimensions?: {
-    length: number;
-    width: number;
-    height: number;
-    unit: "cm" | "in";
-  };
-  
-  // SEO
-  seoTitle?: string;
-  seoDescription?: string;
-  seoKeywords: string[];
-  
-  // Status
+
+  // Status & Features
   isActive: boolean;
   isVisible: boolean;
   isFeatured: boolean;
   isBestSeller: boolean;
   isNew: boolean;
-  
-  // Variants
-  variants?: VariantGroup[];
-  
-  // Specifications
-  specifications: Record<string, string>;
-  
-  // Additional
-  taxable: boolean;
-  barcode?: string;
-  hsCode?: string;
-  countryOfOrigin?: string;
-  metafields?: Record<string, any>;
 }
 
 // Product list filters
@@ -112,13 +82,13 @@ export interface ProductFilters {
 }
 
 // Product list sort options
-export type ProductSortField = 
-  | "name" 
-  | "price" 
-  | "stockCount" 
-  | "createdAt" 
-  | "updatedAt" 
-  | "category" 
+export type ProductSortField =
+  | "name"
+  | "price"
+  | "stockCount"
+  | "createdAt"
+  | "updatedAt"
+  | "category"
   | "brand"
   | "status";
 
@@ -128,13 +98,13 @@ export interface ProductSortOptions {
 }
 
 // Bulk action types
-export type ProductBulkAction = 
-  | "activate" 
-  | "deactivate" 
-  | "feature" 
-  | "unfeature" 
-  | "delete" 
-  | "duplicate" 
+export type ProductBulkAction =
+  | "activate"
+  | "deactivate"
+  | "feature"
+  | "unfeature"
+  | "delete"
+  | "duplicate"
   | "export"
   | "update-category"
   | "update-tags";

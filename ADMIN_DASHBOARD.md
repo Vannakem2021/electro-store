@@ -553,7 +553,6 @@ src/
 - ✅ Permission checking hooks and utilities (usePermissions)
 - ✅ Permission-based UI components (PermissionGate, AccessDenied, RoleBadge, PermissionsList, ProtectedRoute)
 - ✅ Role-based dashboard with dynamic content based on user permissions
-- ✅ Permissions demo page showcasing the access control system
 - ✅ Comprehensive product management system with DataTable, filtering, sorting, and pagination
 - ✅ Product detail view with complete product information display
 - ✅ Admin-specific product types and data structures
