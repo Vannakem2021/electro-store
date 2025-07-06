@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+
 import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { SearchProvider } from "@/contexts/SearchContext";
@@ -32,20 +32,18 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${rubik.variable} antialiased`}>
         <ErrorBoundary level="global">
-          <LanguageProvider>
-            <ToastProvider>
-              <AdminProvider>
-                <CartProvider>
-                  <WishlistProvider>
-                    <SearchProvider>
-                      {children}
-                      <ToastContainer />
-                    </SearchProvider>
-                  </WishlistProvider>
-                </CartProvider>
-              </AdminProvider>
-            </ToastProvider>
-          </LanguageProvider>
+          <ToastProvider>
+            <AdminProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <SearchProvider>
+                    {children}
+                    <ToastContainer />
+                  </SearchProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </AdminProvider>
+          </ToastProvider>
         </ErrorBoundary>
       </body>
     </html>

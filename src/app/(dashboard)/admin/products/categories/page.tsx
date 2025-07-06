@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AdminLayout } from "@/components/admin/layout";
@@ -42,8 +41,6 @@ import {
  * Admin Categories Page - Manage product categories
  */
 const AdminCategoriesPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { showSuccess, showError } = useToast();
   const { products } = usePermissions();
 

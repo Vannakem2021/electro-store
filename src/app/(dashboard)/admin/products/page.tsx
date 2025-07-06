@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AdminLayout } from "@/components/admin/layout";
@@ -29,7 +28,7 @@ import {
   ProductFilters,
   ProductSortOptions,
 } from "@/types/admin-product";
-import { TableColumn } from "@/types/admin";
+import { TableColumn, SortOptions } from "@/types/admin";
 import { formatPrice } from "@/lib/utils";
 import {
   PlusIcon,
@@ -44,8 +43,6 @@ import {
 } from "@/components/ui";
 
 const AdminProductsPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { showSuccess, showError } = useToast();
   const { products } = usePermissions();
 
@@ -273,8 +270,8 @@ const AdminProductsPage: React.FC = () => {
     setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
-  const handleSort = (newSortOptions: ProductSortOptions) => {
-    setSortOptions(newSortOptions);
+  const handleSort = (newSortOptions: SortOptions) => {
+    setSortOptions(newSortOptions as ProductSortOptions);
   };
 
   const handlePageChange = (page: number) => {
@@ -423,16 +420,12 @@ const AdminProductsPage: React.FC = () => {
             <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
               <div className="flex items-center">
                 <AlertTriangleIcon className="w-5 h-5 text-yellow-600 mr-2" />
-                <h3
-                  className={`text-sm font-medium text-yellow-800 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <h3 className="text-sm font-medium text-yellow-800">
                   Inventory Alerts ({alerts.length})
                 </h3>
               </div>
               <div className="mt-2 text-sm text-yellow-700">
-                <p className={isKhmer ? "font-khmer" : "font-rubik"}>
+                <p>
                   {alerts
                     .slice(0, 3)
                     .map((alert) => alert.productName)

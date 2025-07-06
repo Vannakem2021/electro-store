@@ -2,16 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCart } from "@/contexts/CartContext";
 import { getNewProducts } from "@/data";
 import { SpecialProductCard, SkeletonCard } from "@/components/ui";
 import { Product } from "@/types";
 
 const NewProductsSection: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { addToCart } = useCart();
   const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,28 +37,18 @@ const NewProductsSection: React.FC = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h2
-                className={`text-2xl font-bold text-gray-900 mb-2 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                {t("sections.new.title")}
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                New Arrivals
               </h2>
-              <p
-                className={`text-gray-600 text-sm ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                {t("sections.new.description")}
+              <p className="text-gray-600 text-sm">
+                Latest electronics just arrived
               </p>
             </div>
             <Link
               href="/products?filter=new"
-              className={`text-teal-800 hover:text-teal-900 font-medium text-sm transition-colors duration-200 flex items-center gap-1 group ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="text-teal-800 hover:text-teal-900 font-medium text-sm transition-colors duration-200 flex items-center gap-1 group"
             >
-              {t("sections.new.viewAll")}
+              View All
               <svg
                 className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
                 fill="none"
@@ -109,11 +96,9 @@ const NewProductsSection: React.FC = () => {
         <div className="text-center mt-8 md:hidden">
           <Link
             href="/products?filter=new"
-            className={`inline-flex items-center text-teal-800 hover:text-teal-900 font-medium transition-colors duration-200 group ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
+            className="inline-flex items-center text-teal-800 hover:text-teal-900 font-medium transition-colors duration-200 group"
           >
-            {t("product.viewAllNew")}
+            View All New Products
             <svg
               className="w-4 h-4 ml-1 transform transition-transform duration-200 group-hover:translate-x-1"
               fill="none"

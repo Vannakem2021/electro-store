@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface StatusBadgeProps {
   status: string;
@@ -19,8 +18,6 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   size = "md",
   className = "",
 }) => {
-  const { isKhmer } = useLanguage();
-
   const getStatusStyle = (status: string, type: string) => {
     const normalizedStatus = status.toLowerCase().replace(/[_\s]/g, "-");
 
@@ -362,11 +359,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center rounded-md border font-medium ${
-        style.bg
-      } ${style.text} ${style.border} ${sizeClasses} ${
-        isKhmer ? "font-khmer" : "font-rubik"
-      } ${className}`}
+      className={`inline-flex items-center rounded-md border font-medium ${style.bg} ${style.text} ${style.border} ${sizeClasses} ${className}`}
     >
       <span className={`w-2 h-2 rounded-full mr-2 ${style.dot}`} />
       {formatStatus(status)}

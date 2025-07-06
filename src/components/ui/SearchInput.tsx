@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useSearch } from "@/contexts/SearchContext";
 import { SearchIcon, LoaderIcon, ClockIcon, ChevronDownIcon } from "./Icons";
 
@@ -17,8 +16,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
   placeholder,
   isMobile = false,
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const {
     query,
     search,
@@ -132,7 +129,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     };
   }, [debounceTimer]);
 
-  const displayPlaceholder = placeholder || t("nav.search");
+  const displayPlaceholder = placeholder || "Search products...";
 
   return (
     <div className={`relative ${className}`}>
@@ -145,9 +142,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           onKeyDown={handleKeyPress}
           onFocus={handleFocus}
           placeholder={displayPlaceholder}
-          className={`w-full px-4 py-3 pr-12 border border-gray-300 rounded-tr-lg rounded-bl-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 focus:bg-white ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
+          className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-tr-lg rounded-bl-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 focus:bg-white"
         />
         <div className="absolute inset-y-0 right-0 flex items-center">
           {isLoading ? (
@@ -173,20 +168,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
           {/* Suggestions */}
           {suggestions.length > 0 && (
             <div className="p-2">
-              <div
-                className={`px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                {t("search.suggestions")}
+              <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Suggestions
               </div>
               {suggestions.map((suggestion, index) => (
                 <button
                   key={index}
                   onClick={() => handleSearch(suggestion)}
-                  className={`w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-150 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-150"
                 >
                   <SearchIcon className="w-4 h-4 text-gray-400 inline mr-2" />
                   {suggestion}
@@ -199,29 +188,21 @@ const SearchInput: React.FC<SearchInputProps> = ({
           {searchHistory.length > 0 && (
             <div className="p-2 border-t border-gray-100">
               <div className="flex items-center justify-between px-3 py-2">
-                <span
-                  className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
-                  {t("search.recentSearches")}
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Recent Searches
                 </span>
                 <button
                   onClick={clearHistory}
-                  className={`text-xs text-teal-600 hover:text-teal-700 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
+                  className="text-xs text-teal-600 hover:text-teal-700"
                 >
-                  {t("search.clear")}
+                  Clear
                 </button>
               </div>
               {searchHistory.map((historyItem, index) => (
                 <button
                   key={index}
                   onClick={() => handleSearch(historyItem)}
-                  className={`w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-150 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-150"
                 >
                   <ClockIcon className="w-4 h-4 text-gray-400 inline mr-2" />
                   {historyItem}
@@ -235,13 +216,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
             searchHistory.length === 0 &&
             inputValue.trim() && (
               <div className="p-4 text-center">
-                <p
-                  className={`text-sm text-gray-500 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
-                  {t("search.noSuggestions")}
-                </p>
+                <p className="text-sm text-gray-500">No suggestions found</p>
               </div>
             )}
         </div>

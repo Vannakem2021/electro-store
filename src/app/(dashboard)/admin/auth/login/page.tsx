@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useAdmin } from "@/contexts/AdminContext";
 import { LoginCredentials } from "@/types/admin";
 import {
@@ -16,8 +15,6 @@ import {
 } from "@/components/ui";
 
 const AdminLoginPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { login, isAuthenticated, isLoading } = useAdmin();
   const router = useRouter();
 
@@ -116,26 +113,12 @@ const AdminLoginPage: React.FC = () => {
               <div className="w-12 h-12 bg-teal-800 rounded-md flex items-center justify-center mr-3">
                 <ShoppingBagIcon className="w-6 h-6 text-white" />
               </div>
-              <span
-                className={`text-2xl font-bold text-teal-900 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                Elecxo
-              </span>
+              <span className="text-2xl font-bold text-teal-900">Elecxo</span>
             </div>
-            <h2
-              className={`text-2xl font-bold text-gray-900 mb-2 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Admin Login
             </h2>
-            <p
-              className={`text-gray-700 text-sm ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <p className="text-gray-700 text-sm">
               Sign in to access the admin dashboard
             </p>
           </div>
@@ -158,9 +141,7 @@ const AdminLoginPage: React.FC = () => {
             <div>
               <label
                 htmlFor="email"
-                className={`block text-sm font-medium text-gray-800 mb-1 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                className="block text-sm font-medium text-gray-800 mb-1"
               >
                 Email Address
               </label>
@@ -174,13 +155,13 @@ const AdminLoginPage: React.FC = () => {
                 onChange={handleInputChange}
                 className={`w-full px-4 py-3 bg-gray-50 border ${
                   errors.email ? "border-red-500" : "border-gray-300"
-                } rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 focus:bg-white transition-all duration-200 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                } rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 focus:bg-white transition-all duration-200`}
                 placeholder="Enter your email"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600 font-rubik">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-600 font-rubik">
+                  {errors.email}
+                </p>
               )}
             </div>
 
@@ -188,9 +169,7 @@ const AdminLoginPage: React.FC = () => {
             <div className="relative">
               <label
                 htmlFor="password"
-                className={`block text-sm font-medium text-gray-800 mb-1 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                className="block text-sm font-medium text-gray-800 mb-1"
               >
                 Password
               </label>
@@ -204,9 +183,7 @@ const AdminLoginPage: React.FC = () => {
                 onChange={handleInputChange}
                 className={`w-full px-4 py-3 pr-12 bg-gray-50 border ${
                   errors.password ? "border-red-500" : "border-gray-300"
-                } rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 focus:bg-white transition-all duration-200 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                } rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 focus:bg-white transition-all duration-200`}
                 placeholder="Enter your password"
               />
               <button
@@ -221,7 +198,9 @@ const AdminLoginPage: React.FC = () => {
                 )}
               </button>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600 font-rubik">{errors.password}</p>
+                <p className="mt-1 text-sm text-red-600 font-rubik">
+                  {errors.password}
+                </p>
               )}
             </div>
 
@@ -237,9 +216,7 @@ const AdminLoginPage: React.FC = () => {
               />
               <label
                 htmlFor="rememberMe"
-                className={`ml-2 block text-sm text-gray-700 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                className="ml-2 block text-sm text-gray-700"
               >
                 Remember me
               </label>
@@ -250,9 +227,7 @@ const AdminLoginPage: React.FC = () => {
               type="submit"
               loading={isSubmitting}
               loadingText="Signing in..."
-              className={`w-full h-12 text-base font-semibold bg-teal-800 hover:bg-teal-900 focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 text-white rounded-md transition-all duration-200 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="w-full h-12 text-base font-semibold bg-teal-800 hover:bg-teal-900 focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 text-white rounded-md transition-all duration-200"
             >
               Sign in to Admin
             </LoadingButton>
@@ -262,9 +237,7 @@ const AdminLoginPage: React.FC = () => {
           <div className="text-center mt-6">
             <Link
               href="/"
-              className={`text-sm text-teal-700 hover:text-teal-800 transition-colors duration-200 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="text-sm text-teal-700 hover:text-teal-800 transition-colors duration-200"
             >
               ← Back to Store
             </Link>

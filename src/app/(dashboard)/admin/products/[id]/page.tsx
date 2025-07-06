@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { usePermissions } from "@/hooks/usePermissions";
 import { AdminLayout } from "@/components/admin/layout";
 import {
@@ -38,8 +37,6 @@ interface ProductDetailPageProps {
 const AdminProductDetailPage: React.FC<ProductDetailPageProps> = ({
   params,
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { showSuccess, showError } = useToast();
   const { products } = usePermissions();
 

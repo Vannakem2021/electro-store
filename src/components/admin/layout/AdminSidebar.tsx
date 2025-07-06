@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useAdmin } from "@/contexts/AdminContext";
 import { AdminNavItem } from "@/types/admin";
 import {
@@ -163,9 +162,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 };
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
-  const { hasPermission, user } = useAdmin();
+  const { user, isAdmin } = useAdmin();
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<string[]>(() => {
     const defaultExpanded = ["products"];
@@ -193,8 +190,17 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
 
   const canAccessItem = (item: AdminNavItem) => {
     if (!item.permission) return true;
+
+    // In our simplified system:
+    // - Admins have access to everything
+    // - Regular users only have read access
+    if (!user) return false;
+
+    if (isAdmin()) return true;
+
+    // Regular users only get read access
     const [resource, action] = item.permission.split(":");
-    return hasPermission(resource, action);
+    return action === "read";
   };
 
   const renderNavItem = (item: AdminNavItem, level = 0) => {
@@ -214,7 +220,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed, onToggle }) => {
             active
               ? "bg-teal-100 text-teal-800 border-r-2 border-teal-600"
               : "text-gray-700 hover:bg-gray-100 hover:text-teal-700"
-          } ${isKhmer ? "font-khmer" : "font-rubik"}`}
+          }`}
         >
           {hasChildren ? (
             <button

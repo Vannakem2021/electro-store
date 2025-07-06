@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { CheckIcon } from "./Icons";
 
 export interface ProductVariant {
@@ -27,7 +26,9 @@ export interface VariantGroup {
 
 interface ProductVariantsProps {
   variantGroups: VariantGroup[];
-  onVariantChange: (selectedVariants: { [key: string]: ProductVariant }) => void;
+  onVariantChange: (selectedVariants: {
+    [key: string]: ProductVariant;
+  }) => void;
   className?: string;
 }
 
@@ -36,17 +37,18 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
   onVariantChange,
   className = "",
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
-  const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: ProductVariant }>({});
+  const [selectedVariants, setSelectedVariants] = useState<{
+    [key: string]: ProductVariant;
+  }>({});
 
   // Initialize with first available variant for each required group
   useEffect(() => {
     const initialVariants: { [key: string]: ProductVariant } = {};
-    
-    variantGroups.forEach(group => {
+
+    variantGroups.forEach((group) => {
       if (group.required && group.variants.length > 0) {
-        const firstAvailable = group.variants.find(v => v.inStock) || group.variants[0];
+        const firstAvailable =
+          group.variants.find((v) => v.inStock) || group.variants[0];
         initialVariants[group.type] = firstAvailable;
       }
     });
@@ -60,7 +62,7 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
       ...selectedVariants,
       [groupType]: variant,
     };
-    
+
     setSelectedVariants(newSelectedVariants);
     onVariantChange(newSelectedVariants);
   };
@@ -74,14 +76,20 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
         return (
           <button
             key={variant.id}
-            onClick={() => !isDisabled && handleVariantSelect(group.type, variant)}
+            onClick={() =>
+              !isDisabled && handleVariantSelect(group.type, variant)
+            }
             disabled={isDisabled}
             className={`relative w-10 h-10 rounded-full border-2 transition-all duration-200 ${
               isSelected
                 ? "border-teal-600 ring-2 ring-teal-200"
                 : "border-gray-300 hover:border-gray-400"
-            } ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-            title={`${variant.displayValue} ${isDisabled ? "(Out of Stock)" : ""}`}
+            } ${
+              isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            }`}
+            title={`${variant.displayValue} ${
+              isDisabled ? "(Out of Stock)" : ""
+            }`}
           >
             <div
               className="w-full h-full rounded-full"
@@ -112,7 +120,9 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
         return (
           <button
             key={variant.id}
-            onClick={() => !isDisabled && handleVariantSelect(group.type, variant)}
+            onClick={() =>
+              !isDisabled && handleVariantSelect(group.type, variant)
+            }
             disabled={isDisabled}
             className={`px-4 py-2 border rounded-md text-sm font-medium transition-all duration-200 ${
               isSelected
@@ -122,13 +132,11 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
               isDisabled
                 ? "opacity-50 cursor-not-allowed bg-gray-100 text-gray-400"
                 : "cursor-pointer"
-            } ${isKhmer ? "font-khmer" : "font-rubik"}`}
+            }`}
           >
             {variant.displayValue}
             {isDisabled && (
-              <span className="ml-1 text-xs text-red-500">
-                ({t("product.outOfStock")})
-              </span>
+              <span className="ml-1 text-xs text-red-500">(Out of Stock)</span>
             )}
           </button>
         );
@@ -143,20 +151,14 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
       <select
         value={selectedVariant?.id || ""}
         onChange={(e) => {
-          const variant = group.variants.find(v => v.id === e.target.value);
+          const variant = group.variants.find((v) => v.id === e.target.value);
           if (variant) {
             handleVariantSelect(group.type, variant);
           }
         }}
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500 ${
-          isKhmer ? "font-khmer" : "font-rubik"
-        }`}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
       >
-        {!selectedVariant && (
-          <option value="">
-            {t("product.variants.select")} {group.name}
-          </option>
-        )}
+        {!selectedVariant && <option value="">Select {group.name}</option>}
         {group.variants.map((variant) => (
           <option
             key={variant.id}
@@ -164,10 +166,11 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
             disabled={!variant.inStock}
           >
             {variant.displayValue}
-            {variant.priceModifier !== 0 && (
-              ` (${variant.priceModifier > 0 ? "+" : ""}$${Math.abs(variant.priceModifier)})`
-            )}
-            {!variant.inStock && ` - ${t("product.outOfStock")}`}
+            {variant.priceModifier !== 0 &&
+              ` (${variant.priceModifier > 0 ? "+" : ""}$${Math.abs(
+                variant.priceModifier
+              )})`}
+            {!variant.inStock && ` - Out of Stock`}
           </option>
         ))}
       </select>
@@ -199,14 +202,14 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
         <div key={group.type}>
           {/* Group Label */}
           <div className="flex items-center justify-between mb-3">
-            <label className={`text-sm font-medium text-gray-900 ${isKhmer ? "font-khmer" : "font-rubik"}`}>
+            <label className="text-sm font-medium text-gray-900">
               {group.name}
               {group.required && <span className="text-red-500 ml-1">*</span>}
             </label>
-            
+
             {/* Selected Variant Info */}
             {selectedVariants[group.type] && (
-              <span className={`text-sm text-gray-600 ${isKhmer ? "font-khmer" : "font-rubik"}`}>
+              <span className="text-sm text-gray-600">
                 {selectedVariants[group.type].displayValue}
                 {selectedVariants[group.type].priceModifier !== 0 && (
                   <span className="ml-1 font-medium">
@@ -223,21 +226,17 @@ const ProductVariants: React.FC<ProductVariantsProps> = ({
 
           {/* Stock Info */}
           {selectedVariants[group.type] && (
-            <div className={`mt-2 text-xs text-gray-500 ${isKhmer ? "font-khmer" : "font-rubik"}`}>
+            <div className="mt-2 text-xs text-gray-500">
               {selectedVariants[group.type].inStock ? (
                 selectedVariants[group.type].stockCount <= 5 ? (
                   <span className="text-orange-600">
-                    {t("product.variants.lowStock", { count: selectedVariants[group.type].stockCount })}
+                    Low Stock ({selectedVariants[group.type].stockCount} left)
                   </span>
                 ) : (
-                  <span className="text-green-600">
-                    {t("product.variants.inStock")}
-                  </span>
+                  <span className="text-green-600">In Stock</span>
                 )
               ) : (
-                <span className="text-red-600">
-                  {t("product.outOfStock")}
-                </span>
+                <span className="text-red-600">Out of Stock</span>
               )}
             </div>
           )}

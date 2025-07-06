@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { AdminRole } from "@/types/admin";
 
 interface RoleBadgeProps {
@@ -20,8 +20,6 @@ const RoleBadge: React.FC<RoleBadgeProps> = ({
   showLevel = false,
   className = "",
 }) => {
-  const { isKhmer } = useLanguage();
-
   // Extract role information
   const roleName = typeof role === "string" ? role : role.name;
   const roleLevel = typeof role === "string" ? null : role.level;
@@ -87,11 +85,7 @@ const RoleBadge: React.FC<RoleBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center rounded-md border font-medium ${
-        style.bg
-      } ${style.text} ${style.border} ${sizeClasses} ${
-        isKhmer ? "font-khmer" : "font-rubik"
-      } ${className}`}
+      className={`inline-flex items-center rounded-md border font-medium ${style.bg} ${style.text} ${style.border} ${sizeClasses} ${className}`}
     >
       {roleName}
       {showLevel && roleLevel && (

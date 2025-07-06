@@ -1,10 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { AdminUser, LoginCredentials, Permission } from "@/types/admin";
-import { validateAdminCredentials, hasPermission as checkPermission } from "@/data/admin";
+
+import { AdminUser, LoginCredentials } from "@/types/admin";
+import { validateAdminCredentials, isAdmin } from "@/data/admin";
 import { useToast } from "./ToastContext";
 
 // Admin context interface
@@ -12,10 +18,9 @@ interface AdminContextType {
   user: AdminUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  permissions: Permission[];
   login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => void;
-  hasPermission: (resource: string, action: string) => boolean;
+  isAdmin: () => boolean;
   isRole: (roleName: string) => boolean;
   getRoleLevel: () => number;
 }
@@ -43,7 +48,7 @@ const ADMIN_USER_KEY = "elecxo-admin-user";
 
 export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   const router = useRouter();
-  const { t } = useTranslation();
+
   const { showSuccess, showError } = useToast();
 
   const [user, setUser] = useState<AdminUser | null>(null);
@@ -76,65 +81,73 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   }, []);
 
   // Login function
-  const login = useCallback(async (credentials: LoginCredentials): Promise<boolean> => {
-    try {
-      setIsLoading(true);
+  const login = useCallback(
+    async (credentials: LoginCredentials): Promise<boolean> => {
+      try {
+        setIsLoading(true);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulate API call delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Validate credentials using mock data
-      const authenticatedUser = validateAdminCredentials(credentials.email, credentials.password);
+        // Validate credentials using mock data
+        const authenticatedUser = validateAdminCredentials(
+          credentials.email,
+          credentials.password
+        );
 
-      if (!authenticatedUser) {
+        if (!authenticatedUser) {
+          showError(
+            "Authentication Failed",
+            "Invalid email or password. Please try again."
+          );
+          return false;
+        }
+
+        if (!authenticatedUser.isActive) {
+          showError(
+            "Account Disabled",
+            "Your account has been disabled. Please contact an administrator."
+          );
+          return false;
+        }
+
+        // Generate mock token (in real app, this would come from server)
+        const token = `admin_token_${Date.now()}_${Math.random()
+          .toString(36)
+          .substr(2, 9)}`;
+
+        // Update user's last login time
+        const updatedUser = {
+          ...authenticatedUser,
+          lastLoginAt: new Date(),
+        };
+
+        // Store authentication data
+        localStorage.setItem(ADMIN_TOKEN_KEY, token);
+        localStorage.setItem(ADMIN_USER_KEY, JSON.stringify(updatedUser));
+
+        // Update state
+        setUser(updatedUser);
+
+        showSuccess(
+          "Login Successful",
+          `Welcome back, ${updatedUser.firstName}!`
+        );
+
+        return true;
+      } catch (error) {
+        console.error("Login error:", error);
         showError(
-          "Authentication Failed",
-          "Invalid email or password. Please try again."
+          "Login Error",
+          "An unexpected error occurred. Please try again."
         );
         return false;
+      } finally {
+        setIsLoading(false);
       }
-
-      if (!authenticatedUser.isActive) {
-        showError(
-          "Account Disabled",
-          "Your account has been disabled. Please contact an administrator."
-        );
-        return false;
-      }
-
-      // Generate mock token (in real app, this would come from server)
-      const token = `admin_token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      // Update user's last login time
-      const updatedUser = {
-        ...authenticatedUser,
-        lastLoginAt: new Date(),
-      };
-
-      // Store authentication data
-      localStorage.setItem(ADMIN_TOKEN_KEY, token);
-      localStorage.setItem(ADMIN_USER_KEY, JSON.stringify(updatedUser));
-
-      // Update state
-      setUser(updatedUser);
-
-      showSuccess(
-        "Login Successful",
-        `Welcome back, ${updatedUser.firstName}!`
-      );
-
-      return true;
-    } catch (error) {
-      console.error("Login error:", error);
-      showError(
-        "Login Error",
-        "An unexpected error occurred. Please try again."
-      );
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [showSuccess, showError]);
+    },
+    [showSuccess, showError]
+  );
 
   // Logout function
   const logout = useCallback(() => {
@@ -157,17 +170,20 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
     }
   }, [router, showSuccess, showError]);
 
-  // Check if user has specific permission
-  const hasPermission = useCallback((resource: string, action: string): boolean => {
+  // Check if user is admin
+  const isAdminUser = useCallback((): boolean => {
     if (!user) return false;
-    return checkPermission(user, resource, action);
+    return isAdmin(user);
   }, [user]);
 
   // Check if user has specific role
-  const isRole = useCallback((roleName: string): boolean => {
-    if (!user) return false;
-    return user.role.name.toLowerCase() === roleName.toLowerCase();
-  }, [user]);
+  const isRole = useCallback(
+    (roleName: string): boolean => {
+      if (!user) return false;
+      return user.role.name.toLowerCase() === roleName.toLowerCase();
+    },
+    [user]
+  );
 
   // Get user's role level
   const getRoleLevel = useCallback((): number => {
@@ -177,16 +193,14 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
 
   // Computed values
   const isAuthenticated = !!user;
-  const permissions = user?.permissions || [];
 
   const contextValue: AdminContextType = {
     user,
     isAuthenticated,
     isLoading,
-    permissions,
     login,
     logout,
-    hasPermission,
+    isAdmin: isAdminUser,
     isRole,
     getRoleLevel,
   };

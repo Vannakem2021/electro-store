@@ -2,16 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCart } from "@/contexts/CartContext";
 import { getBestSellerProducts } from "@/data";
 import { ProductCard, SkeletonCard } from "@/components/ui";
 import { Product } from "@/types";
 
 const BestSellerSection: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { addToCart } = useCart();
   const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,28 +37,18 @@ const BestSellerSection: React.FC = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h2
-                className={`text-2xl font-bold text-gray-900 mb-2 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                {t("sections.bestsellers.title")}
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Best Sellers
               </h2>
-              <p
-                className={`text-gray-600 text-sm ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                {t("sections.bestsellers.description")}
+              <p className="text-gray-600 text-sm">
+                Most popular electronics this month
               </p>
             </div>
             <Link
               href="/products?filter=bestseller"
-              className={`text-teal-800 hover:text-teal-900 font-medium text-sm transition-colors duration-200 flex items-center gap-1 group ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="text-teal-800 hover:text-teal-900 font-medium text-sm transition-colors duration-200 flex items-center gap-1 group"
             >
-              {t("sections.bestsellers.viewAll")}
+              View All
               <svg
                 className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
                 fill="none"

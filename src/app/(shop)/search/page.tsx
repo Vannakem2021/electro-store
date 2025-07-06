@@ -168,28 +168,17 @@ const SearchPage: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <SearchIcon className="w-6 h-6 text-teal-600" />
-            <h1
-              className={`text-2xl font-bold text-gray-900 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {query ? t("search.resultsFor") : t("search.title")}
+            <h1 className="text-2xl font-bold text-gray-900">
+              {query ? "Search Results for" : "Search Products"}
               {query && <span className="text-teal-600 ml-2">"{query}"</span>}
             </h1>
           </div>
 
           {query && (
-            <p
-              className={`text-gray-600 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <p className="text-gray-600">
               {isLoading
-                ? t("search.searching")
-                : t("search.foundResults", {
-                    count: filteredResults.length,
-                    total: resultCount,
-                  })}
+                ? "Searching..."
+                : `Found ${filteredResults.length} of ${resultCount} results`}
             </p>
           )}
         </div>
@@ -228,45 +217,29 @@ const SearchPage: React.FC = () => {
           /* No Search Query */
           <div className="text-center py-16">
             <SearchIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h2
-              className={`text-xl font-semibold text-gray-600 mb-2 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("search.enterQuery")}
+            <h2 className="text-xl font-semibold text-gray-600 mb-2">
+              Enter Search Query
             </h2>
-            <p
-              className={`text-gray-500 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("search.searchHint")}
+            <p className="text-gray-500">
+              Use the search bar above to find products
             </p>
           </div>
         ) : filteredResults.length === 0 ? (
           /* No Results */
           <div className="text-center py-16">
             <SearchIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h2
-              className={`text-xl font-semibold text-gray-600 mb-2 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("search.noResults")}
+            <h2 className="text-xl font-semibold text-gray-600 mb-2">
+              No Results Found
             </h2>
-            <p
-              className={`text-gray-500 mb-4 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("search.noResultsHint")}
+            <p className="text-gray-500 mb-4">
+              Try adjusting your search terms or filters
             </p>
             <Button
               onClick={clearFilters}
               variant="outline"
               className="border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white"
             >
-              {t("search.clearFilters")}
+              Clear Filters
             </Button>
           </div>
         ) : (
@@ -276,13 +249,7 @@ const SearchPage: React.FC = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm p-6 mb-6 lg:mb-0">
                 <div className="flex items-center justify-between mb-4">
-                  <h3
-                    className={`font-semibold text-gray-900 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
-                    {t("search.filters")}
-                  </h3>
+                  <h3 className="font-semibold text-gray-900">Filters</h3>
                   <Button
                     onClick={() => setShowFilters(!showFilters)}
                     variant="ghost"
@@ -301,12 +268,8 @@ const SearchPage: React.FC = () => {
                   {/* Category Filter */}
                   {availableCategories.length > 0 && (
                     <div>
-                      <h4
-                        className={`font-medium text-gray-900 mb-3 ${
-                          isKhmer ? "font-khmer" : "font-rubik"
-                        }`}
-                      >
-                        {t("search.category")}
+                      <h4 className="font-medium text-gray-900 mb-3">
+                        Category
                       </h4>
                       <div className="space-y-2">
                         {availableCategories.map((category) => (
@@ -327,11 +290,7 @@ const SearchPage: React.FC = () => {
                               }}
                               className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                             />
-                            <span
-                              className={`ml-2 text-sm text-gray-700 ${
-                                isKhmer ? "font-khmer" : "font-rubik"
-                              }`}
-                            >
+                            <span className="ml-2 text-sm text-gray-700">
                               {category.name}
                             </span>
                           </label>
@@ -343,13 +302,7 @@ const SearchPage: React.FC = () => {
                   {/* Brand Filter */}
                   {availableBrands.length > 0 && (
                     <div>
-                      <h4
-                        className={`font-medium text-gray-900 mb-3 ${
-                          isKhmer ? "font-khmer" : "font-rubik"
-                        }`}
-                      >
-                        {t("search.brand")}
-                      </h4>
+                      <h4 className="font-medium text-gray-900 mb-3">Brand</h4>
                       <div className="space-y-2">
                         {availableBrands.map((brand) => (
                           <label key={brand} className="flex items-center">
@@ -384,7 +337,7 @@ const SearchPage: React.FC = () => {
                     size="sm"
                     className="w-full border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white"
                   >
-                    {t("search.clearFilters")}
+                    Clear Filters
                   </Button>
                 </div>
               </div>
@@ -394,27 +347,19 @@ const SearchPage: React.FC = () => {
             <div className="lg:col-span-3">
               {/* Sort Options */}
               <div className="flex items-center justify-between mb-6">
-                <span
-                  className={`text-sm text-gray-600 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
-                  {t("search.showing", { count: filteredResults.length })}
+                <span className="text-sm text-gray-600">
+                  Showing {filteredResults.length} results
                 </span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className={`border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
+                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                 >
-                  <option value="relevance">{t("search.sortRelevance")}</option>
-                  <option value="price-low">{t("search.sortPriceLow")}</option>
-                  <option value="price-high">
-                    {t("search.sortPriceHigh")}
-                  </option>
-                  <option value="newest">{t("search.sortNewest")}</option>
-                  <option value="rating">{t("search.sortRating")}</option>
+                  <option value="relevance">Relevance</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="newest">Newest</option>
+                  <option value="rating">Rating</option>
                 </select>
               </div>
 

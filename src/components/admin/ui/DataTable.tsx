@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { TableColumn, SortOptions } from "@/types/admin";
 import {
   ChevronUpIcon,
@@ -49,8 +48,6 @@ const DataTable = <T extends Record<string, any>>({
   emptyMessage = "No data available",
   className = "",
 }: DataTableProps<T>) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const [selectAll, setSelectAll] = useState(false);
 
   const handleSort = (field: string) => {
@@ -120,13 +117,7 @@ const DataTable = <T extends Record<string, any>>({
     return (
       <div className="flex items-center justify-between px-6 py-3 bg-gray-50 border-t border-gray-200">
         <div className="flex items-center space-x-2">
-          <span
-            className={`text-sm text-gray-700-accessible ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            Show
-          </span>
+          <span className="text-sm text-gray-700">Show</span>
           <select
             value={limit}
             onChange={(e) => onLimitChange(Number(e.target.value))}
@@ -137,21 +128,11 @@ const DataTable = <T extends Record<string, any>>({
             <option value={50}>50</option>
             <option value={100}>100</option>
           </select>
-          <span
-            className={`text-sm text-gray-700-accessible ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            of {total} results
-          </span>
+          <span className="text-sm text-gray-700">of {total} results</span>
         </div>
 
         <div className="flex items-center space-x-2">
-          <span
-            className={`text-sm text-gray-700-accessible ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <span className="text-sm text-gray-700">
             {startItem}-{endItem} of {total}
           </span>
 
@@ -205,13 +186,7 @@ const DataTable = <T extends Record<string, any>>({
       >
         <div className="p-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-4"></div>
-          <p
-            className={`text-gray-600-accessible ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            Loading...
-          </p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -268,9 +243,7 @@ const DataTable = <T extends Record<string, any>>({
                   colSpan={columns.length + (selectable ? 1 : 0)}
                   className="px-6 py-8 text-center text-gray-500-accessible"
                 >
-                  <p className={`${isKhmer ? "font-khmer" : "font-rubik"}`}>
-                    {emptyMessage}
-                  </p>
+                  <p>{emptyMessage}</p>
                 </td>
               </tr>
             ) : (

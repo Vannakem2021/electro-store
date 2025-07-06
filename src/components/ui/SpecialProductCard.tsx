@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useWishlist } from "@/contexts/WishlistContext";
 import { Product } from "@/types";
 import { formatPrice, truncateText } from "@/lib/utils";
@@ -23,8 +22,6 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
   variant = "discount",
   showLink = true,
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
@@ -85,21 +82,13 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
 
           {/* Clean Badges */}
           {isDiscount && product.discount && (
-            <div
-              className={`absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-md ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-md">
               -{product.discount}%
             </div>
           )}
           {isNew && product.isNew && (
-            <div
-              className={`absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded-md ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("product.new")}
+            <div className="absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded-md">
+              NEW
             </div>
           )}
         </div>
@@ -114,31 +103,17 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
             </h3>
 
             {/* Model/Category - Translate if generic terms */}
-            <p
-              className={`text-xs text-gray-500 mb-3 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {product.category}
-            </p>
+            <p className="text-xs text-gray-500 mb-3">{product.category}</p>
           </div>
 
           {/* Price and Actions Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span
-                className={`text-lg font-bold text-gray-900 ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
+              <span className="text-lg font-bold text-gray-900">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
-                <span
-                  className={`text-sm text-gray-400 line-through ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="text-sm text-gray-400 line-through">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
@@ -156,10 +131,10 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
                 }`}
                 title={
                   !product.inStock
-                    ? t("product.outOfStock")
+                    ? "Out of Stock"
                     : isAddingToCart
                     ? "Adding..."
-                    : t("product.addToCart")
+                    : "Add to Cart"
                 }
               >
                 {isAddingToCart ? (
@@ -182,8 +157,8 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
                   isTogglingWishlist
                     ? "Processing..."
                     : isInWishlist(product.id)
-                    ? t("wishlist.removeFromWishlist")
-                    : t("wishlist.addToWishlist")
+                    ? "Remove from Wishlist"
+                    : "Add to Wishlist"
                 }
               >
                 {isTogglingWishlist ? (

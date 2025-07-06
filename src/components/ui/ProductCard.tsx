@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { Product } from "@/types";
@@ -22,8 +21,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   showLink = true,
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -101,8 +98,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             isTogglingWishlist
               ? "Processing..."
               : isInWishlist(product.id)
-              ? t("wishlist.removeFromWishlist")
-              : t("wishlist.addToWishlist")
+              ? "Remove from Wishlist"
+              : "Add to Wishlist"
           }
         >
           {isTogglingWishlist ? (
@@ -117,12 +114,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </button>
 
         {product.isNew && (
-          <div
-            className={`absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded-md ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("product.new")}
+          <div className="absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded-md">
+            NEW
           </div>
         )}
       </div>
@@ -138,32 +131,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </h3>
 
           {/* Model/Category - Translate if generic terms */}
-          <p
-            className={`text-xs text-gray-500 mb-3 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {product.category}
-          </p>
+          <p className="text-xs text-gray-500 mb-3">{product.category}</p>
         </div>
 
         {/* Price and Cart Section - Fixed at bottom */}
         <div className="flex items-end justify-between mt-auto">
           <div className="space-y-1">
             {product.originalPrice && (
-              <span
-                className={`text-xs text-gray-400 line-through block ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
+              <span className="text-xs text-gray-400 line-through block">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
-            <span
-              className={`text-base sm:text-lg font-bold text-gray-900 block ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <span className="text-base sm:text-lg font-bold text-gray-900 block">
               {formatPrice(product.price)}
             </span>
           </div>
@@ -175,10 +154,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className="w-8 h-8 bg-gray-100 hover:bg-teal-600 hover:text-white disabled:bg-gray-200 text-gray-600 rounded-lg transition-all duration-200 ease-in-out disabled:cursor-not-allowed flex items-center justify-center group/btn flex-shrink-0"
             title={
               !product.inStock
-                ? t("product.outOfStock")
+                ? "Out of Stock"
                 : isAddingToCart
                 ? "Adding..."
-                : t("product.addToCart")
+                : "Add to Cart"
             }
           >
             {isAddingToCart ? (

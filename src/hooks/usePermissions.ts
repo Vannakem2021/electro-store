@@ -1,33 +1,43 @@
 "use client";
 
 import { useAdmin } from "@/contexts/AdminContext";
-import { PERMISSIONS } from "@/types/admin";
 
 /**
- * Custom hook for permission checking with enhanced functionality
+ * Custom hook for permission checking with simplified 2-role system
  */
 export const usePermissions = () => {
-  const { user, hasPermission, isRole, getRoleLevel } = useAdmin();
+  const { user, isRole, getRoleLevel, isAdmin: isAdminUser } = useAdmin();
 
   /**
    * Check if user has permission for a specific resource and action
+   * In our simplified system, admins have all permissions, users have read-only
    */
   const can = (resource: string, action: string): boolean => {
-    return hasPermission(resource, action);
+    if (!user) return false;
+
+    // Admin role has all permissions
+    if (isAdminUser()) return true;
+
+    // Regular users only have read permissions
+    return action === "read";
   };
 
   /**
    * Check if user has any of the specified permissions
    */
-  const canAny = (permissions: Array<{ resource: string; action: string }>): boolean => {
-    return permissions.some(({ resource, action }) => hasPermission(resource, action));
+  const canAny = (
+    permissions: Array<{ resource: string; action: string }>
+  ): boolean => {
+    return permissions.some(({ resource, action }) => can(resource, action));
   };
 
   /**
    * Check if user has all of the specified permissions
    */
-  const canAll = (permissions: Array<{ resource: string; action: string }>): boolean => {
-    return permissions.every(({ resource, action }) => hasPermission(resource, action));
+  const canAll = (
+    permissions: Array<{ resource: string; action: string }>
+  ): boolean => {
+    return permissions.every(({ resource, action }) => can(resource, action));
   };
 
   /**
@@ -41,7 +51,7 @@ export const usePermissions = () => {
    * Check if user has any of the specified roles
    */
   const hasAnyRole = (roleNames: string[]): boolean => {
-    return roleNames.some(roleName => isRole(roleName));
+    return roleNames.some((roleName) => isRole(roleName));
   };
 
   /**
@@ -52,24 +62,17 @@ export const usePermissions = () => {
   };
 
   /**
-   * Check if user is Super Admin
-   */
-  const isSuperAdmin = (): boolean => {
-    return hasRole("Super Admin") || getRoleLevel() === 1;
-  };
-
-  /**
-   * Check if user is Admin or higher
+   * Check if user is Admin (in our simplified system, this is the highest role)
    */
   const isAdmin = (): boolean => {
-    return hasMinimumRoleLevel(2);
+    return isAdminUser();
   };
 
   /**
-   * Check if user is Manager or higher
+   * Check if user is regular user
    */
-  const isManager = (): boolean => {
-    return hasMinimumRoleLevel(3);
+  const isUser = (): boolean => {
+    return hasRole("User");
   };
 
   /**
@@ -81,11 +84,12 @@ export const usePermissions = () => {
     canUpdate: () => can("products", "update"),
     canDelete: () => can("products", "delete"),
     canBulkEdit: () => can("products", "bulk"),
-    canManage: () => canAny([
-      { resource: "products", action: "create" },
-      { resource: "products", action: "update" },
-      { resource: "products", action: "delete" },
-    ]),
+    canManage: () =>
+      canAny([
+        { resource: "products", action: "create" },
+        { resource: "products", action: "update" },
+        { resource: "products", action: "delete" },
+      ]),
   };
 
   /**
@@ -98,11 +102,12 @@ export const usePermissions = () => {
     canDelete: () => can("orders", "delete"),
     canFulfill: () => can("orders", "fulfill"),
     canRefund: () => can("orders", "refund"),
-    canManage: () => canAny([
-      { resource: "orders", action: "update" },
-      { resource: "orders", action: "fulfill" },
-      { resource: "orders", action: "refund" },
-    ]),
+    canManage: () =>
+      canAny([
+        { resource: "orders", action: "update" },
+        { resource: "orders", action: "fulfill" },
+        { resource: "orders", action: "refund" },
+      ]),
   };
 
   /**
@@ -113,10 +118,11 @@ export const usePermissions = () => {
     canUpdate: () => can("customers", "update"),
     canDelete: () => can("customers", "delete"),
     canSupport: () => can("customers", "support"),
-    canManage: () => canAny([
-      { resource: "customers", action: "update" },
-      { resource: "customers", action: "delete" },
-    ]),
+    canManage: () =>
+      canAny([
+        { resource: "customers", action: "update" },
+        { resource: "customers", action: "delete" },
+      ]),
   };
 
   /**
@@ -143,11 +149,12 @@ export const usePermissions = () => {
     canRead: () => can("users", "read"),
     canUpdate: () => can("users", "update"),
     canDelete: () => can("users", "delete"),
-    canManage: () => canAny([
-      { resource: "users", action: "create" },
-      { resource: "users", action: "update" },
-      { resource: "users", action: "delete" },
-    ]),
+    canManage: () =>
+      canAny([
+        { resource: "users", action: "create" },
+        { resource: "users", action: "update" },
+        { resource: "users", action: "delete" },
+      ]),
   };
 
   /**
@@ -163,13 +170,29 @@ export const usePermissions = () => {
    * Get user's permissions as a readable list
    */
   const getPermissionsList = () => {
-    return user?.permissions.map(p => ({
-      id: p.id,
-      name: p.name,
-      resource: p.resource,
-      action: p.action,
-      description: p.description,
-    })) || [];
+    if (!user) return [];
+
+    if (isAdminUser()) {
+      return [
+        {
+          id: "admin-all",
+          name: "Full Access",
+          resource: "all",
+          action: "all",
+          description: "Administrator with full access to all features",
+        },
+      ];
+    } else {
+      return [
+        {
+          id: "user-read",
+          name: "Read Only",
+          resource: "all",
+          action: "read",
+          description: "Regular user with read-only access",
+        },
+      ];
+    }
   };
 
   /**
@@ -190,16 +213,14 @@ export const usePermissions = () => {
     can,
     canAny,
     canAll,
-    hasPermission,
 
     // Role checks
     hasRole,
     hasAnyRole,
     hasMinimumRoleLevel,
     isRole,
-    isSuperAdmin,
     isAdmin,
-    isManager,
+    isUser,
 
     // Resource-specific permissions
     products,

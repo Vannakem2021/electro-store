@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { XIcon, AlertTriangleIcon } from "@/components/ui";
 
 interface ConfirmationModalProps {
@@ -27,8 +27,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   type = "danger",
   loading = false,
 }) => {
-  const { isKhmer } = useLanguage();
-
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -106,26 +104,20 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="p-6">
             <div className="flex items-start space-x-4">
               {/* Icon */}
-              <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${typeStyles.iconBg}`}>
-                <AlertTriangleIcon className={`w-6 h-6 ${typeStyles.iconColor}`} />
+              <div
+                className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${typeStyles.iconBg}`}
+              >
+                <AlertTriangleIcon
+                  className={`w-6 h-6 ${typeStyles.iconColor}`}
+                />
               </div>
 
               {/* Text Content */}
               <div className="flex-1 min-w-0">
-                <h3
-                  className={`text-lg font-semibold text-gray-900 mb-2 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   {title}
                 </h3>
-                <p
-                  className={`text-sm text-gray-600 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
-                  {message}
-                </p>
+                <p className="text-sm text-gray-600">{message}</p>
               </div>
             </div>
 
@@ -135,9 +127,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className={`px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {cancelText}
               </button>
@@ -145,9 +135,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 type="button"
                 onClick={onConfirm}
                 disabled={loading}
-                className={`px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${typeStyles.confirmBg} ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                className={`px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${typeStyles.confirmBg}`}
               >
                 {loading ? (
                   <div className="flex items-center space-x-2">

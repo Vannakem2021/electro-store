@@ -2,23 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCart } from "@/contexts/CartContext";
 import { getFeaturedProducts, categories } from "@/data";
 import { Product } from "@/types";
 import { Navbar, Footer } from "@/components";
-import { 
-  ProductCard, 
-  SearchInput, 
-  HomeIcon, 
+import {
+  ProductCard,
+  SearchInput,
+  HomeIcon,
   MagnifyingGlassIcon,
-  ExclamationTriangleIcon 
+  ExclamationTriangleIcon,
 } from "@/components/ui";
 
 const NotFoundPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { addToCart } = useCart();
   const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
 
@@ -41,26 +38,13 @@ const NotFoundPage: React.FC = () => {
         <div className="text-center py-16">
           <div className="mb-8">
             <ExclamationTriangleIcon className="w-24 h-24 text-teal-600 mx-auto mb-6" />
-            <h1
-              className={`text-4xl font-bold text-gray-900 mb-4 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              404
-            </h1>
-            <h2
-              className={`text-2xl font-semibold text-gray-700 mb-4 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("error.pageNotFound")}
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+              Page Not Found
             </h2>
-            <p
-              className={`text-gray-600 max-w-md mx-auto mb-8 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("error.pageNotFoundDescription")}
+            <p className="text-gray-600 max-w-md mx-auto mb-8">
+              Sorry, we couldn't find the page you're looking for. It might have
+              been moved, deleted, or you entered the wrong URL.
             </p>
           </div>
 
@@ -68,48 +52,36 @@ const NotFoundPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link
               href="/"
-              className={`inline-flex items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors duration-200 font-medium ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors duration-200 font-medium"
             >
               <HomeIcon className="w-5 h-5" />
-              {t("error.goHome")}
+              Back to Home
             </Link>
-            
+
             <Link
               href="/products"
-              className={`inline-flex items-center gap-2 px-6 py-3 border-2 border-teal-700 text-teal-700 rounded-md hover:bg-teal-700 hover:text-white transition-colors duration-200 font-medium ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-teal-700 text-teal-700 rounded-md hover:bg-teal-700 hover:text-white transition-colors duration-200 font-medium"
             >
               <MagnifyingGlassIcon className="w-5 h-5" />
-              {t("error.browseProducts")}
+              Browse Products
             </Link>
           </div>
 
           {/* Search Section */}
           <div className="max-w-md mx-auto mb-12">
-            <h3
-              className={`text-lg font-semibold text-gray-900 mb-4 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("error.searchProducts")}
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Search Products
             </h3>
-            <SearchInput 
-              placeholder={t("error.searchPlaceholder")}
+            <SearchInput
+              placeholder="Search for products..."
               className="w-full"
             />
           </div>
 
           {/* Popular Categories */}
           <div className="mb-12">
-            <h3
-              className={`text-lg font-semibold text-gray-900 mb-6 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("error.popularCategories")}
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              Popular Categories
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
               {categories.slice(0, 6).map((category) => (
@@ -122,11 +94,7 @@ const NotFoundPage: React.FC = () => {
                     <div className="w-12 h-12 bg-teal-100 rounded-md flex items-center justify-center mx-auto mb-2 group-hover:bg-teal-200 transition-colors duration-200">
                       <span className="text-teal-600 text-xl">📱</span>
                     </div>
-                    <span
-                      className={`text-sm font-medium text-gray-700 group-hover:text-teal-700 ${
-                        isKhmer ? "font-khmer" : "font-rubik"
-                      }`}
-                    >
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-teal-700">
                       {category.name}
                     </span>
                   </div>
@@ -139,12 +107,8 @@ const NotFoundPage: React.FC = () => {
         {/* Suggested Products */}
         {suggestedProducts.length > 0 && (
           <div className="border-t border-gray-200 pt-12">
-            <h3
-              className={`text-xl font-bold text-gray-900 mb-6 text-center ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("error.suggestedProducts")}
+            <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
+              Suggested Products
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {suggestedProducts.map((product) => (

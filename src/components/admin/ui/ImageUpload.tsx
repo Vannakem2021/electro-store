@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useCallback } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { UploadIcon, XIcon, ImageIcon } from "@/components/ui/Icons";
 
@@ -22,7 +22,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   acceptedTypes = ["image/jpeg", "image/png", "image/webp"],
   className = "",
 }) => {
-  const { isKhmer } = useLanguage();
   const { showError, showSuccess } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -181,26 +180,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className={`text-sm font-medium text-teal-600 hover:text-teal-700 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="text-sm font-medium text-teal-600 hover:text-teal-700"
             >
               {uploading ? "Uploading..." : "Click to upload"}
             </button>
-            <p
-              className={`text-sm text-gray-500 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              or drag and drop
-            </p>
+            <p className="text-sm text-gray-500">or drag and drop</p>
           </div>
 
-          <p
-            className={`text-xs text-gray-400 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <p className="text-xs text-gray-400">
             PNG, JPG, WEBP up to {maxFileSize}MB (max {maxImages} images)
           </p>
         </div>
@@ -266,13 +253,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {images.length === 0 && (
         <div className="text-center py-8">
           <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p
-            className={`text-sm text-gray-500 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            No images uploaded yet
-          </p>
+          <p className="text-sm text-gray-500">No images uploaded yet</p>
         </div>
       )}
     </div>

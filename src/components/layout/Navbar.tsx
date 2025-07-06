@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { navigationItems } from "@/data";
@@ -15,11 +14,9 @@ import {
   MenuIcon,
   CloseIcon,
 } from "@/components/ui/Icons";
-import { LanguageToggle, SearchInput } from "@/components/ui";
+import { SearchInput } from "@/components/ui";
 
 const Navbar: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { itemCount } = useCart();
   const { itemCount: wishlistCount } = useWishlist();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,22 +61,17 @@ const Navbar: React.FC = () => {
 
           {/* Right side actions - Clean and minimal */}
           <div className="hidden md:flex items-center space-x-4 ml-6">
-            {/* Language Toggle */}
-            <LanguageToggle />
+            {/* Language toggle removed - simplified interface */}
 
             {/* Wishlist */}
             <Link
               href="/account/wishlist"
               className="p-2 text-gray-600 hover:text-teal-600 transition-colors duration-200 relative"
-              title={t("nav.wishlist")}
+              title="Wishlist"
             >
               <HeartIcon className="h-5 w-5" />
               {wishlistCount > 0 && (
-                <span
-                  className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
                   {wishlistCount > 99 ? "99+" : wishlistCount}
                 </span>
               )}
@@ -89,15 +81,11 @@ const Navbar: React.FC = () => {
             <Link
               href="/cart"
               className="p-2 text-gray-600 hover:text-teal-600 transition-colors duration-200 relative"
-              title={t("nav.cart")}
+              title="Shopping Cart"
             >
               <ShoppingBagIcon className="h-5 w-5" />
               {itemCount > 0 && (
-                <span
-                  className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
                   {itemCount > 99 ? "99+" : itemCount}
                 </span>
               )}
@@ -114,9 +102,7 @@ const Navbar: React.FC = () => {
             {/* Login Button - Simplified */}
             <Link
               href="/auth/login"
-              className={`ml-4 px-4 py-2 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-200 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="ml-4 px-4 py-2 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-200"
             >
               Login
             </Link>
@@ -152,10 +138,7 @@ const Navbar: React.FC = () => {
                 </Link>
               ))}
               <div className="pt-4 space-y-3">
-                {/* Language Toggle for Mobile */}
-                <div className="flex justify-center">
-                  <LanguageToggle />
-                </div>
+                {/* Language toggle removed - simplified interface */}
 
                 <SearchInput isMobile={true} />
                 <div className="flex space-x-3">
@@ -188,9 +171,7 @@ const Navbar: React.FC = () => {
                 </div>
                 <Link
                   href="/auth/login"
-                  className={`w-full flex items-center justify-center px-4 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-200 ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
+                  className="w-full flex items-center justify-center px-4 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login

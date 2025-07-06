@@ -6,8 +6,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { FormField } from "@/components/admin/ui";
 import {
@@ -32,9 +31,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   onSuccess,
   onCancel,
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
-  const { showToast } = useToast();
+  const { showSuccess, showError } = useToast();
 
   // Form state (simplified)
   const [formData, setFormData] = useState<CustomerFormData>({
@@ -116,7 +113,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     e.preventDefault();
 
     if (!validateForm()) {
-      showToast("Please fix the errors before submitting", "error");
+      showError("Please fix the errors before submitting");
       return;
     }
 
@@ -127,16 +124,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 
       if (mode === "create") {
         savedCustomer = await createCustomer(formData);
-        showToast("Customer created successfully!", "success");
+        showSuccess("Customer created successfully!");
       } else {
         savedCustomer = await updateCustomer(customer!.id, formData);
-        showToast("Customer updated successfully!", "success");
+        showSuccess("Customer updated successfully!");
       }
 
       onSuccess?.(savedCustomer);
     } catch (error) {
       console.error("Error saving customer:", error);
-      showToast("Failed to save customer. Please try again.", "error");
+      showError("Failed to save customer. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -148,11 +145,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       <div className="space-y-8">
         {/* Basic Information Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Basic Information
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -215,11 +208,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 
         {/* Customer Status Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Customer Status & Type
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -255,11 +244,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 
         {/* Notes Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Additional Information
           </h3>
           <FormField

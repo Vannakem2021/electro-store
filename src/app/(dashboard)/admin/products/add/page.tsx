@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { AdminLayout } from "@/components/admin/layout";
 import { ProtectedRoute, ProductForm } from "@/components/admin/ui";
@@ -16,8 +15,6 @@ import { ArrowLeftIcon } from "@/components/ui";
  * Add Product Page - Create new products
  */
 const AdminAddProductPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { showSuccess, showError } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -66,9 +63,7 @@ const AdminAddProductPage: React.FC = () => {
           <div>
             <Link
               href="/admin/products"
-              className={`inline-flex items-center text-sm text-gray-600-accessible hover:text-gray-900 transition-colors duration-200 focus-accessible ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Back to Products

@@ -270,7 +270,9 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({
         }
 
         // Add items to cart silently (no individual toasts)
-        validItems.forEach((item) => addToCart(item.product, 1, true));
+        validItems.forEach((item) =>
+          addToCart(item.product, 1, undefined, true)
+        );
 
         // Remove items from wishlist silently (no individual toasts)
         productIds.forEach((id) => removeFromWishlist(id, true));

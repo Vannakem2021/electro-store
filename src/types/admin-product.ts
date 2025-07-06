@@ -1,4 +1,9 @@
-import { Product, ProductVariant, VariantGroup } from "./product";
+import {
+  Product,
+  ProductVariant,
+  VariantGroup,
+  SimpleVariantOptions,
+} from "./product";
 import { Category } from "./category";
 
 // Extended product interface for admin management
@@ -64,6 +69,12 @@ export interface ProductFormData {
   isFeatured: boolean;
   isBestSeller: boolean;
   isNew: boolean;
+
+  // Simplified Variants
+  variantOptions?: SimpleVariantOptions;
+
+  // Product Specifications
+  specifications?: Record<string, string>;
 }
 
 // Product list filters

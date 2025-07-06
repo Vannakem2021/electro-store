@@ -1,9 +1,17 @@
 import categoriesData from "./categories.json";
 import productsData from "./products.json";
 import { Category, Product } from "@/types";
+import { createMockSimpleVariants } from "@/lib/simpleVariants";
 
 export const categories: Category[] = categoriesData as Category[];
-export const products: Product[] = productsData as Product[];
+
+// Enhanced products with simplified variants
+export const products: Product[] = (productsData as Product[]).map(
+  (product) => ({
+    ...product,
+    variantOptions: createMockSimpleVariants(product.categoryId),
+  })
+);
 
 // Helper functions for data manipulation
 export const getFeaturedProducts = (): Product[] => {

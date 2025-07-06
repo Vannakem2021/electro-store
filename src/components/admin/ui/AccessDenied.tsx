@@ -2,8 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { usePermissions } from "@/hooks/usePermissions";
 import { ShieldIcon, HomeIcon, ArrowLeftIcon } from "@/components/ui/Icons";
 
@@ -27,8 +26,6 @@ const AccessDenied: React.FC<AccessDeniedProps> = ({
   showRoleInfo = true,
   className = "",
 }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { user, getRoleInfo } = usePermissions();
 
   const roleInfo = getRoleInfo();
@@ -46,41 +43,25 @@ const AccessDenied: React.FC<AccessDeniedProps> = ({
         </div>
 
         {/* Title */}
-        <h1
-          className={`text-2xl font-bold text-gray-900 mb-4 ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
-        >
-          {title}
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{title}</h1>
 
         {/* Message */}
-        <p
-          className={`text-gray-600 mb-6 ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
-        >
-          {message}
-        </p>
+        <p className="text-gray-600 mb-6">{message}</p>
 
         {/* Role Information */}
         {showRoleInfo && roleInfo && (
           <div className="bg-gray-50 rounded-md p-4 mb-6 text-left">
-            <h3
-              className={`text-sm font-semibold text-gray-800 mb-2 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">
               Your Access Level:
             </h3>
             <div className="space-y-1">
-              <p className="text-sm text-gray-600 font-rubik">
+              <p className="text-sm text-gray-600">
                 <span className="font-medium">Role:</span> {roleInfo.name}
               </p>
-              <p className="text-sm text-gray-600 font-rubik">
+              <p className="text-sm text-gray-600">
                 <span className="font-medium">Level:</span> {roleInfo.level}
               </p>
-              <p className="text-sm text-gray-600 font-rubik">
+              <p className="text-sm text-gray-600">
                 <span className="font-medium">User:</span> {user?.firstName}{" "}
                 {user?.lastName}
               </p>
@@ -93,9 +74,7 @@ const AccessDenied: React.FC<AccessDeniedProps> = ({
           {showBackButton && (
             <button
               onClick={() => window.history.back()}
-              className={`inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Go Back
@@ -105,9 +84,7 @@ const AccessDenied: React.FC<AccessDeniedProps> = ({
           {showHomeButton && (
             <Link
               href="/admin"
-              className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200"
             >
               <HomeIcon className="w-4 h-4 mr-2" />
               Dashboard
@@ -117,11 +94,7 @@ const AccessDenied: React.FC<AccessDeniedProps> = ({
 
         {/* Contact Admin */}
         <div className="mt-8 pt-6 border-t border-gray-200">
-          <p
-            className={`text-sm text-gray-500 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <p className="text-sm text-gray-500">
             Need access to this feature?{" "}
             <Link
               href="/admin/support"

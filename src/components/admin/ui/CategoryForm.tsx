@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import {
   AdminCategory,
@@ -31,7 +31,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   loading = false,
   mode,
 }) => {
-  const { isKhmer } = useLanguage();
   const { showError } = useToast();
 
   // Form state (simplified)
@@ -129,11 +128,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
       <div className="space-y-8">
         {/* Basic Information Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Basic Information
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -214,11 +209,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
         {/* Category Image Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Category Image
           </h3>
           <FormField
@@ -240,11 +231,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
         {/* Category Status Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Category Status
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -258,11 +245,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                   }
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700">
                   Category is active and visible
                 </span>
               </label>
@@ -278,11 +261,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                   }
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700">
                   Display in main navigation menu
                 </span>
               </label>
@@ -297,18 +276,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           type="button"
           onClick={onCancel}
           disabled={loading}
-          className={`px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700-accessible bg-white hover:bg-gray-50 focus-accessible transition-colors duration-200 disabled:opacity-50 ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
+          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors duration-200 disabled:opacity-50"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus-accessible transition-colors duration-200 disabled:opacity-50 ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors duration-200 disabled:opacity-50"
         >
           {loading ? (
             <>

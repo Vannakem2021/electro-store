@@ -3,8 +3,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { AdminLayout } from "@/components/admin/layout";
 import { ProtectedRoute, StatusBadge } from "@/components/admin/ui";
 import { adminCustomers } from "@/data/admin-customers";
@@ -20,8 +19,6 @@ import {
 } from "@/components/ui";
 
 const CustomerDetailPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const params = useParams();
   const customerId = params.id as string;
 

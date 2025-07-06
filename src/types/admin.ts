@@ -6,7 +6,6 @@ export interface AdminUser {
   firstName: string;
   lastName: string;
   role: AdminRole;
-  permissions: Permission[];
   isActive: boolean;
   lastLoginAt: Date | null;
   createdAt: Date;
@@ -18,16 +17,7 @@ export interface AdminRole {
   id: string;
   name: string;
   description: string;
-  permissions: Permission[];
-  level: number; // 1 = Super Admin, 2 = Admin, 3 = Manager, 4 = Editor
-}
-
-export interface Permission {
-  id: string;
-  name: string;
-  resource: string;
-  action: string; // 'create' | 'read' | 'update' | 'delete'
-  description: string;
+  level: number; // 1 = Admin, 2 = User
 }
 
 export interface LoginCredentials {
@@ -43,52 +33,10 @@ export interface AuthResponse {
   expiresIn: number;
 }
 
-// Permission constants
-export const PERMISSIONS = {
-  PRODUCTS: {
-    CREATE: 'products:create',
-    READ: 'products:read',
-    UPDATE: 'products:update',
-    DELETE: 'products:delete',
-    BULK: 'products:bulk',
-  },
-  ORDERS: {
-    CREATE: 'orders:create',
-    READ: 'orders:read',
-    UPDATE: 'orders:update',
-    DELETE: 'orders:delete',
-    FULFILL: 'orders:fulfill',
-    REFUND: 'orders:refund',
-  },
-  CUSTOMERS: {
-    READ: 'customers:read',
-    UPDATE: 'customers:update',
-    DELETE: 'customers:delete',
-    SUPPORT: 'customers:support',
-  },
-  ANALYTICS: {
-    READ: 'analytics:read',
-    EXPORT: 'analytics:export',
-  },
-  SETTINGS: {
-    READ: 'settings:read',
-    UPDATE: 'settings:update',
-  },
-  USERS: {
-    CREATE: 'users:create',
-    READ: 'users:read',
-    UPDATE: 'users:update',
-    DELETE: 'users:delete',
-  },
-  SYSTEM: {
-    BACKUP: 'system:backup',
-    LOGS: 'system:logs',
-    MAINTENANCE: 'system:maintenance',
-  },
-} as const;
+// Simple role-based access - no complex permissions needed
 
 // Role types
-export type AdminRoleType = 'super_admin' | 'admin' | 'manager' | 'editor';
+export type AdminRoleType = "super_admin" | "admin" | "manager" | "editor";
 
 // Navigation item for admin sidebar
 export interface AdminNavItem {
@@ -121,13 +69,19 @@ export interface DashboardMetrics {
 export interface DateRange {
   start: Date;
   end: Date;
-  preset?: 'today' | 'yesterday' | 'last7days' | 'last30days' | 'last90days' | 'custom';
+  preset?:
+    | "today"
+    | "yesterday"
+    | "last7days"
+    | "last30days"
+    | "last90days"
+    | "custom";
 }
 
 // Admin notification
 export interface AdminNotification {
   id: string;
-  type: 'info' | 'warning' | 'error' | 'success';
+  type: "info" | "warning" | "error" | "success";
   title: string;
   message: string;
   isRead: boolean;
@@ -183,7 +137,7 @@ export interface FilterOptions {
 
 export interface SortOptions {
   field: string;
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 // Table column definition
@@ -192,7 +146,7 @@ export interface TableColumn<T = any> {
   label: string;
   sortable?: boolean;
   width?: string;
-  align?: 'left' | 'center' | 'right';
+  align?: "left" | "center" | "right";
   render?: (value: any, row: T) => React.ReactNode;
 }
 
@@ -203,5 +157,5 @@ export interface BulkAction<T = any> {
   icon?: string;
   action: (selectedItems: T[]) => void | Promise<void>;
   confirmMessage?: string;
-  variant?: 'default' | 'danger';
+  variant?: "default" | "danger";
 }

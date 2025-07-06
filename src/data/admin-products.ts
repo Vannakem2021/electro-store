@@ -2,6 +2,7 @@ import productsData from "./products.json";
 import categoriesData from "./categories.json";
 import { Product } from "@/types/product";
 import { Category } from "@/types/category";
+import { createMockSimpleVariants } from "@/lib/simpleVariants";
 
 // Convert JSON data to typed arrays
 const products: Product[] = productsData as Product[];
@@ -35,6 +36,7 @@ export const adminProducts: AdminProduct[] = products.map((product) => ({
   requiresShipping: true,
   taxable: true,
   vendor: product.brand,
+  variantOptions: createMockSimpleVariants(product.categoryId), // Add simplified variants
   barcode: `${product.id}${Math.random().toString().substr(2, 8)}`,
   hsCode: getHSCode(product.categoryId),
   countryOfOrigin: getCountryOfOrigin(product.brand),
@@ -363,6 +365,7 @@ export const createProduct = async (
       ? (productData.stockCount || 0) > 0
       : true,
     stockCount: productData.stockCount || 0,
+    specifications: productData.specifications || {},
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     // Admin-specific fields with defaults for removed fields

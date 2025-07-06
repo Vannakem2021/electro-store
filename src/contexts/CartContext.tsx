@@ -8,8 +8,12 @@ import React, {
   useCallback,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { Product, CartItem } from "@/types";
+import { Product, CartItem, SelectedVariants } from "@/types";
 import { useToast } from "./ToastContext";
+import {
+  getVariantDisplayName,
+  calculateSimpleVariantPrice,
+} from "@/lib/simpleVariants";
 
 // Cart state interface
 interface CartState {
@@ -23,12 +27,21 @@ interface CartState {
 
 // Cart actions interface
 interface CartActions {
-  addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addToCart: (
+    product: Product,
+    quantity?: number,
+    selectedVariants?: SelectedVariants,
+    silent?: boolean
+  ) => void;
+  removeFromCart: (productId: string, variantKey?: string) => void;
+  updateQuantity: (
+    productId: string,
+    quantity: number,
+    variantKey?: string
+  ) => void;
   clearCart: () => void;
-  getCartItem: (productId: string) => CartItem | undefined;
-  isInCart: (productId: string) => boolean;
+  getCartItem: (productId: string, variantKey?: string) => CartItem | undefined;
+  isInCart: (productId: string, variantKey?: string) => boolean;
 }
 
 // Combined cart context interface
@@ -53,6 +66,24 @@ interface CartProviderProps {
 
 // Local storage key
 const CART_STORAGE_KEY = "elecxo-cart";
+
+// Generate unique key for cart items with variants
+const generateCartItemKey = (
+  productId: string,
+  selectedVariants?: SelectedVariants
+): string => {
+  if (!selectedVariants || Object.keys(selectedVariants).length === 0) {
+    return productId;
+  }
+
+  const variantKeys = Object.entries(selectedVariants)
+    .filter(([_, variant]) => variant)
+    .map(([type, variant]) => `${type}:${variant!.id}`)
+    .sort()
+    .join("|");
+
+  return `${productId}#${variantKeys}`;
+};
 
 // Shipping cost calculation (simplified)
 const calculateShipping = (subtotal: number): number => {
@@ -97,15 +128,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Calculate cart totals
   const calculateTotals = useCallback((items: CartItem[]) => {
-    const subtotal = items.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    );
+    const subtotal = items.reduce((sum, item) => {
+      // Use finalPrice if available (for variant pricing), otherwise use product price
+      const itemPrice = item.finalPrice || item.product.price;
+      return sum + itemPrice * item.quantity;
+    }, 0);
 
     const discount = items.reduce((sum, item) => {
-      const originalPrice = item.product.originalPrice || item.product.price;
-      const discountAmount =
-        (originalPrice - item.product.price) * item.quantity;
+      const itemPrice = item.finalPrice || item.product.price;
+      const originalPrice = item.product.originalPrice || itemPrice;
+      const discountAmount = (originalPrice - itemPrice) * item.quantity;
       return sum + discountAmount;
     }, 0);
 
@@ -124,12 +156,26 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Add item to cart
   const addToCart = useCallback(
-    (product: Product, quantity: number = 1, silent: boolean = false) => {
+    (
+      product: Product,
+      quantity: number = 1,
+      selectedVariants?: SelectedVariants,
+      silent: boolean = false
+    ) => {
       try {
+        const cartItemKey = generateCartItemKey(product.id, selectedVariants);
+        const finalPrice = selectedVariants
+          ? calculateSimpleVariantPrice(product, selectedVariants)
+          : product.price;
+
         setCartState((prevState) => {
-          const existingItemIndex = prevState.items.findIndex(
-            (item) => item.product.id === product.id
-          );
+          const existingItemIndex = prevState.items.findIndex((item) => {
+            const itemKey = generateCartItemKey(
+              item.product.id,
+              item.selectedVariants
+            );
+            return itemKey === cartItemKey;
+          });
 
           let newItems: CartItem[];
           let isNewItem = false;
@@ -143,7 +189,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             );
           } else {
             // Add new item
-            newItems = [...prevState.items, { product, quantity }];
+            const newCartItem: CartItem = {
+              product,
+              quantity,
+              selectedVariants,
+              finalPrice,
+            };
+            newItems = [...prevState.items, newCartItem];
             isNewItem = true;
           }
 
@@ -157,7 +209,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
         // Show success toast after state update (unless silent)
         if (!silent) {
-          showSuccess(t("toast.addedToCart"), `${product.name}`);
+          const variantInfo = selectedVariants
+            ? ` (${getVariantDisplayName(selectedVariants)})`
+            : "";
+          showSuccess(t("toast.addedToCart"), `${product.name}${variantInfo}`);
         }
       } catch (error) {
         console.error("Error adding to cart:", error);
@@ -172,23 +227,37 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Remove item from cart
   const removeFromCart = useCallback(
-    (productId: string) => {
+    (productId: string, variantKey?: string) => {
       try {
         setCartState((prevState) => {
-          const removedItem = prevState.items.find(
-            (item) => item.product.id === productId
-          );
+          const targetKey = variantKey || productId;
 
-          const newItems = prevState.items.filter(
-            (item) => item.product.id !== productId
-          );
+          const removedItem = prevState.items.find((item) => {
+            const itemKey = generateCartItemKey(
+              item.product.id,
+              item.selectedVariants
+            );
+            return itemKey === targetKey;
+          });
+
+          const newItems = prevState.items.filter((item) => {
+            const itemKey = generateCartItemKey(
+              item.product.id,
+              item.selectedVariants
+            );
+            return itemKey !== targetKey;
+          });
+
           const totals = calculateTotals(newItems);
 
           // Show success toast after state update
           if (removedItem) {
+            const variantInfo = removedItem.selectedVariants
+              ? ` (${getVariantDisplayName(removedItem.selectedVariants)})`
+              : "";
             showSuccess(
               t("toast.removedFromCart"),
-              `${removedItem.product.name}`
+              `${removedItem.product.name}${variantInfo}`
             );
           }
 
@@ -210,16 +279,22 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Update item quantity
   const updateQuantity = useCallback(
-    (productId: string, quantity: number) => {
+    (productId: string, quantity: number, variantKey?: string) => {
+      const targetKey = variantKey || productId;
+
       if (quantity <= 0) {
-        removeFromCart(productId);
+        removeFromCart(productId, variantKey);
         return;
       }
 
       setCartState((prevState) => {
-        const newItems = prevState.items.map((item) =>
-          item.product.id === productId ? { ...item, quantity } : item
-        );
+        const newItems = prevState.items.map((item) => {
+          const itemKey = generateCartItemKey(
+            item.product.id,
+            item.selectedVariants
+          );
+          return itemKey === targetKey ? { ...item, quantity } : item;
+        });
         const totals = calculateTotals(newItems);
 
         return {
@@ -245,16 +320,30 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Get specific cart item
   const getCartItem = useCallback(
-    (productId: string): CartItem | undefined => {
-      return cartState.items.find((item) => item.product.id === productId);
+    (productId: string, variantKey?: string): CartItem | undefined => {
+      const targetKey = variantKey || productId;
+      return cartState.items.find((item) => {
+        const itemKey = generateCartItemKey(
+          item.product.id,
+          item.selectedVariants
+        );
+        return itemKey === targetKey;
+      });
     },
     [cartState.items]
   );
 
   // Check if product is in cart
   const isInCart = useCallback(
-    (productId: string): boolean => {
-      return cartState.items.some((item) => item.product.id === productId);
+    (productId: string, variantKey?: string): boolean => {
+      const targetKey = variantKey || productId;
+      return cartState.items.some((item) => {
+        const itemKey = generateCartItemKey(
+          item.product.id,
+          item.selectedVariants
+        );
+        return itemKey === targetKey;
+      });
     },
     [cartState.items]
   );

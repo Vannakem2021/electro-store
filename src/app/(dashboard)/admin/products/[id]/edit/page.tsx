@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { notFound } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { AdminLayout } from "@/components/admin/layout";
 import { ProtectedRoute, ProductForm } from "@/components/admin/ui";
@@ -35,15 +34,15 @@ const AdminEditProductPage: React.FC = () => {
 
     const loadProduct = async () => {
       setPageLoading(true);
-      
+
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       const fetchedProduct = getAdminProductById(productId);
       if (!fetchedProduct) {
         notFound();
       }
-      
+
       setProduct(fetchedProduct);
       setPageLoading(false);
     };
@@ -53,26 +52,23 @@ const AdminEditProductPage: React.FC = () => {
 
   const handleSubmit = async (formData: ProductFormData) => {
     if (!product) return;
-    
+
     setLoading(true);
-    
+
     try {
       // Update the product using the mock API
       const updatedProduct = await updateProduct(product.id, formData);
-      
+
       showSuccess(
         "Product Updated",
         `${updatedProduct.name} has been updated successfully.`
       );
-      
+
       // Redirect to the product detail page
       router.push(`/admin/products/${updatedProduct.id}`);
     } catch (error) {
       console.error("Error updating product:", error);
-      showError(
-        "Update Failed",
-        "Failed to update product. Please try again."
-      );
+      showError("Update Failed", "Failed to update product. Please try again.");
     } finally {
       setLoading(false);
     }

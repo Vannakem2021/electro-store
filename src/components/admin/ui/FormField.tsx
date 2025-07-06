@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FormFieldProps {
   label: string;
@@ -20,39 +19,19 @@ const FormField: React.FC<FormFieldProps> = ({
   children,
   className = "",
 }) => {
-  const { isKhmer } = useLanguage();
-
   return (
     <div className={`space-y-1 ${className}`}>
-      <label
-        className={`block text-sm font-medium text-gray-700-accessible ${
-          isKhmer ? "font-khmer" : "font-rubik"
-        }`}
-      >
+      <label className="block text-sm font-medium text-gray-700">
         {label}
-        {required && <span className="text-red-700-accessible ml-1">*</span>}
+        {required && <span className="text-red-700 ml-1">*</span>}
       </label>
 
       {children}
 
-      {error && (
-        <p
-          className={`text-sm text-red-700-accessible ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
-        >
-          {error}
-        </p>
-      )}
+      {error && <p className="text-sm text-red-700">{error}</p>}
 
       {helpText && !error && (
-        <p
-          className={`text-sm text-gray-600-accessible ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
-        >
-          {helpText}
-        </p>
+        <p className="text-sm text-gray-600">{helpText}</p>
       )}
     </div>
   );

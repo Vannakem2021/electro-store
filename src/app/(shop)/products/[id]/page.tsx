@@ -7,20 +7,15 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import { getProductById, getProductsByCategory, getCategoryById } from "@/data";
-import { Product, ProductVariant } from "@/types";
+import { Product, SelectedVariants } from "@/types";
 import { formatPrice } from "@/lib/utils";
-import {
-  generateMockVariants,
-  calculateVariantPrice,
-  areRequiredVariantsSelected,
-  getVariantImages,
-} from "@/lib/mockVariants";
+import { hasVariants } from "@/lib/simpleVariants";
 import { Navbar, Footer } from "@/components";
 import {
   Button,
   ProductCard,
   ProductImageGallery,
-  ProductVariants,
+  SimpleProductVariants,
   ChevronRightIcon,
   ShoppingBagIcon,
   LoadingButton,
@@ -42,10 +37,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [showAddedToCart, setShowAddedToCart] = useState(false);
-  const [selectedVariants, setSelectedVariants] = useState<{
-    [key: string]: ProductVariant;
-  }>({});
+  const [selectedVariants, setSelectedVariants] = useState<SelectedVariants>(
+    {}
+  );
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [currentStock, setCurrentStock] = useState(0);
   const [currentImages, setCurrentImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -64,20 +60,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
         notFound();
       }
 
-      // Add mock variants to the product
-      const productWithVariants = {
-        ...fetchedProduct,
-        variants: generateMockVariants(
-          fetchedProduct.id,
-          fetchedProduct.categoryId
-        ),
-      };
-
-      setProduct(productWithVariants);
-      setCurrentPrice(productWithVariants.price);
-      setCurrentImages(
-        productWithVariants.images || [productWithVariants.image]
-      );
+      setProduct(fetchedProduct);
+      setCurrentPrice(fetchedProduct.price);
+      setCurrentStock(fetchedProduct.stockCount);
+      setCurrentImages(fetchedProduct.images || [fetchedProduct.image]);
 
       // Get related products from the same category
       const related = getProductsByCategory(fetchedProduct.categoryId)
@@ -90,23 +76,18 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
     loadProduct();
   }, [params]);
 
-  // Handle variant selection
+  // Handle simplified variant selection
   const handleVariantChange = useCallback(
-    (newSelectedVariants: { [key: string]: ProductVariant }) => {
+    (newSelectedVariants: SelectedVariants, price: number, stock: number) => {
       setSelectedVariants(newSelectedVariants);
+      setCurrentPrice(price);
+      setCurrentStock(stock);
 
+      // Update images based on selected variants (simplified)
       if (product) {
-        // Update price based on selected variants
-        const newPrice = calculateVariantPrice(
-          product.price,
-          newSelectedVariants
-        );
-        setCurrentPrice(newPrice);
-
-        // Update images based on selected variants
         const baseImages = product.images || [product.image];
-        const newImages = getVariantImages(baseImages, newSelectedVariants);
-        setCurrentImages(newImages);
+        // For now, just use base images - could add variant-specific images later
+        setCurrentImages(baseImages);
       }
     },
     [product]
@@ -152,27 +133,14 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
   const handleAddToCart = () => {
     if (!product) return;
 
-    // Check if all required variants are selected
-    if (product.variants && product.variants.length > 0) {
-      const hasRequiredVariants = areRequiredVariantsSelected(
-        product.variants,
-        selectedVariants
-      );
-      if (!hasRequiredVariants) {
-        // Could show an error message here
-        return;
-      }
+    // Check stock availability
+    if (currentStock <= 0) {
+      // Could show an error message here
+      return;
     }
 
-    // Create product with current price and variant info
-    const productToAdd = {
-      ...product,
-      price: currentPrice,
-      // Add variant info to product for cart display
-      selectedVariants: Object.values(selectedVariants),
-    };
-
-    addToCart(productToAdd, quantity);
+    // Add to cart with variant info
+    addToCart(product, quantity, selectedVariants);
 
     // Show success feedback
     setShowAddedToCart(true);
@@ -182,15 +150,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
   const handleBuyNow = async () => {
     if (!product || isBuyingNow) return;
 
-    // Check if all required variants are selected
-    if (product.variants && product.variants.length > 0) {
-      const hasRequiredVariants = areRequiredVariantsSelected(
-        product.variants,
-        selectedVariants
-      );
-      if (!hasRequiredVariants) {
-        return;
-      }
+    // Check stock availability
+    if (currentStock <= 0) {
+      return;
     }
 
     setIsBuyingNow(true);
@@ -199,15 +161,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Create product with current price and variant info
-      const productToAdd = {
-        ...product,
-        price: currentPrice,
-        selectedVariants: Object.values(selectedVariants),
-      };
-
       // Add to cart first
-      addToCart(productToAdd, quantity);
+      addToCart(product, quantity, selectedVariants);
 
       // Redirect to checkout page
       router.push("/checkout");
@@ -395,9 +350,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
             </div>
 
             {/* Product Variants */}
-            {product.variants && product.variants.length > 0 && (
-              <ProductVariants
-                variantGroups={product.variants}
+            {product.variantOptions && hasVariants(product) && (
+              <SimpleProductVariants
+                variantOptions={product.variantOptions}
                 onVariantChange={handleVariantChange}
               />
             )}
@@ -427,7 +382,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                 </span>
                 <button
                   onClick={() =>
-                    setQuantity(Math.min(product.stockCount, quantity + 1))
+                    setQuantity(Math.min(currentStock, quantity + 1))
                   }
                   className="w-10 h-10 rounded-md border border-gray-300 hover:border-teal-400 flex items-center justify-center font-bold text-gray-700 hover:text-teal-700 transition-colors duration-200"
                 >
@@ -442,18 +397,18 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                 onClick={handleAddToCart}
                 loading={isAddingToCart}
                 loadingText={t("product.addToCart")}
-                disabled={!product.inStock}
+                disabled={currentStock <= 0}
                 className={`w-full h-12 font-medium bg-teal-700 hover:bg-teal-800 transition-colors duration-200 flex items-center justify-center gap-2 ${
                   isKhmer ? "font-khmer" : "font-rubik"
                 }`}
               >
                 <ShoppingBagIcon className="w-5 h-5" />
-                {product.inStock
+                {currentStock > 0
                   ? t("product.addToCart")
                   : t("product.outOfStock")}
               </LoadingButton>
 
-              {product.inStock && (
+              {currentStock > 0 && (
                 <LoadingButton
                   onClick={handleBuyNow}
                   loading={isBuyingNow}

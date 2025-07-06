@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { ChevronLeftIcon, ChevronRightIcon, ZoomInIcon } from "./Icons";
 
 interface ProductImageGalleryProps {
@@ -18,21 +18,24 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
   discount,
   className = "",
 }) => {
-  const { isKhmer } = useLanguage();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-  const [imageLoading, setImageLoading] = useState<{ [key: number]: boolean }>({});
-  const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>({});
+  const [imageLoading, setImageLoading] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+  const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>(
+    {}
+  );
   const imageRef = useRef<HTMLDivElement>(null);
 
   const handleImageLoad = (index: number) => {
-    setImageLoading(prev => ({ ...prev, [index]: false }));
+    setImageLoading((prev) => ({ ...prev, [index]: false }));
   };
 
   const handleImageError = (index: number) => {
-    setImageLoading(prev => ({ ...prev, [index]: false }));
-    setImageErrors(prev => ({ ...prev, [index]: true }));
+    setImageLoading((prev) => ({ ...prev, [index]: false }));
+    setImageErrors((prev) => ({ ...prev, [index]: true }));
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -42,7 +45,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    setZoomPosition({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+    setZoomPosition({
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y)),
+    });
   };
 
   const handleMouseEnter = () => {
@@ -63,11 +69,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
 
   const selectImage = (index: number) => {
     setSelectedImageIndex(index);
-    setImageLoading(prev => ({ ...prev, [index]: true }));
+    setImageLoading((prev) => ({ ...prev, [index]: true }));
   };
 
   // Fallback image for errors
-  const fallbackImage = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=400&fit=crop&crop=center";
+  const fallbackImage =
+    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=400&fit=crop&crop=center";
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -89,7 +96,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
 
           {/* Main Image */}
           <Image
-            src={imageErrors[selectedImageIndex] ? fallbackImage : images[selectedImageIndex]}
+            src={
+              imageErrors[selectedImageIndex]
+                ? fallbackImage
+                : images[selectedImageIndex]
+            }
             alt={`${productName} - Image ${selectedImageIndex + 1}`}
             fill
             className={`object-cover transition-transform duration-300 ${
@@ -109,11 +120,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
 
           {/* Discount Badge */}
           {discount && (
-            <div
-              className={`absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-md z-10 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
+            <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-md z-10">
               -{discount}%
             </div>
           )}

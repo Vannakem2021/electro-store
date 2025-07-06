@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { categories } from "@/data";
 import { AdminProduct, ProductFormData } from "@/types/admin-product";
+import { SimpleVariantOptions } from "@/types";
 import { FormField, ImageUpload } from "./";
+import SimpleVariantForm from "./SimpleVariantForm";
+import SpecificationsForm from "./SpecificationsForm";
 import { SaveIcon, Loader2Icon } from "@/components/ui/Icons";
 
 interface ProductFormProps {
@@ -23,7 +26,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
   loading = false,
   mode,
 }) => {
-  const { isKhmer } = useLanguage();
   const { showError } = useToast();
 
   // Form state (simplified)
@@ -47,6 +49,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     isFeatured: false,
     isBestSeller: false,
     isNew: false,
+    variantOptions: {},
+    specifications: {},
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -74,6 +78,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
         isFeatured: product.isFeatured ?? false,
         isBestSeller: product.isBestSeller ?? false,
         isNew: product.isNew ?? false,
+        variantOptions: product.variantOptions || {},
+        specifications: product.specifications || {},
       });
     }
   }, [product, mode]);
@@ -166,11 +172,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       <div className="space-y-8">
         {/* Basic Information Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Basic Information
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -257,11 +259,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
         {/* Pricing & Inventory Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Pricing & Inventory
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -320,11 +318,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     }
                     className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                   />
-                  <span
-                    className={`ml-2 text-sm text-gray-700-accessible ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
+                  <span className="ml-2 text-sm text-gray-700-accessible">
                     Track quantity for this product
                   </span>
                 </label>
@@ -379,11 +373,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         }
                         className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                       />
-                      <span
-                        className={`ml-2 text-sm text-gray-700-accessible ${
-                          isKhmer ? "font-khmer" : "font-rubik"
-                        }`}
-                      >
+                      <span className="ml-2 text-sm text-gray-700-accessible">
                         Allow customers to purchase when out of stock
                       </span>
                     </label>
@@ -396,11 +386,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
         {/* Product Images Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Product Images
           </h3>
           <FormField
@@ -418,13 +404,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </FormField>
         </div>
 
+        {/* Product Variants Section */}
+        {formData.categoryId && (
+          <SimpleVariantForm
+            categoryId={formData.categoryId}
+            variantOptions={formData.variantOptions}
+            onChange={(variantOptions) =>
+              handleInputChange("variantOptions", variantOptions)
+            }
+          />
+        )}
+
+        {/* Product Specifications Section */}
+        <SpecificationsForm
+          specifications={formData.specifications}
+          onChange={(specifications) =>
+            handleInputChange("specifications", specifications)
+          }
+        />
+
         {/* Product Status & Features Section */}
         <div>
-          <h3
-            className={`text-lg font-semibold text-gray-900 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Product Status & Features
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -438,11 +439,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   }
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700-accessible">
                   Product is active
                 </span>
               </label>
@@ -458,11 +455,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   }
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700-accessible">
                   Visible in store
                 </span>
               </label>
@@ -478,11 +471,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   }
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700-accessible">
                   Featured product
                 </span>
               </label>
@@ -498,11 +487,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   }
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700-accessible">
                   Best seller badge
                 </span>
               </label>
@@ -516,11 +501,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   onChange={(e) => handleInputChange("isNew", e.target.checked)}
                   className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
-                <span
-                  className={`ml-2 text-sm text-gray-700-accessible ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
+                <span className="ml-2 text-sm text-gray-700-accessible">
                   New product badge
                 </span>
               </label>
@@ -535,18 +516,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
           type="button"
           onClick={onCancel}
           disabled={loading}
-          className={`px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700-accessible bg-white hover:bg-gray-50 focus-accessible transition-colors duration-200 disabled:opacity-50 ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
+          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700-accessible bg-white hover:bg-gray-50 focus-accessible transition-colors duration-200 disabled:opacity-50"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus-accessible transition-colors duration-200 disabled:opacity-50 ${
-            isKhmer ? "font-khmer" : "font-rubik"
-          }`}
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus-accessible transition-colors duration-200 disabled:opacity-50"
         >
           {loading ? (
             <>

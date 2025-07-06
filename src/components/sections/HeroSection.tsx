@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import Button from "@/components/ui/Button";
 
 interface HeroSlide {
@@ -54,8 +53,6 @@ const heroSlides: HeroSlide[] = [
 ];
 
 const HeroSection: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -82,37 +79,21 @@ const HeroSection: React.FC = () => {
             {/* Content */}
             <div className="space-y-6">
               <div>
-                <h1
-                  className={`text-4xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
-                  {t(currentHero.titleKey)}
+                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight">
+                  Latest Electronics
                 </h1>
-                <h2
-                  className={`text-4xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight ${
-                    isKhmer ? "font-khmer" : "font-rubik"
-                  }`}
-                >
-                  {t(currentHero.subtitleKey)}
+                <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight">
+                  Best Deals
                 </h2>
               </div>
 
-              <p
-                className={`text-gray-700 text-lg whitespace-pre-line max-w-md leading-relaxed ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
-                {t(currentHero.descriptionKey)}
+              <p className="text-gray-700 text-lg whitespace-pre-line max-w-md leading-relaxed">
+                Discover the latest electronics with unbeatable prices and
+                quality.
               </p>
 
-              <Button
-                size="lg"
-                className={
-                  isKhmer ? "font-khmer font-medium" : "font-rubik font-medium"
-                }
-              >
-                {t(currentHero.ctaKey)}
+              <Button size="lg" className="font-medium">
+                Shop Now
               </Button>
             </div>
 
@@ -121,7 +102,7 @@ const HeroSection: React.FC = () => {
               <div className="relative aspect-square max-w-md mx-auto transition-transform duration-300 ease-in-out hover:scale-105">
                 <Image
                   src={currentHero.image}
-                  alt={t(currentHero.titleKey)}
+                  alt="Latest Electronics"
                   fill
                   className="object-cover rounded-md"
                   priority
@@ -151,20 +132,10 @@ const HeroSection: React.FC = () => {
       <div className="hidden lg:block absolute right-4 top-1/2 transform -translate-y-1/2 space-y-4">
         {/* PlayStation 5 Card */}
         <div className="bg-white rounded-md shadow-md p-4 w-56 transition-all duration-300 ease-in-out hover:shadow-xl group cursor-pointer">
-          <div
-            className={`text-xs text-gray-600 mb-1 font-medium uppercase tracking-wide ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("sideProducts.playstation")}
+          <div className="text-xs text-gray-600 mb-1 font-medium uppercase tracking-wide">
+            PlayStation 5
           </div>
-          <div
-            className={`text-sm font-bold mb-3 text-gray-900 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("product.from")} $569
-          </div>
+          <div className="text-sm font-bold mb-3 text-gray-900">From $569</div>
           <div className="relative h-16 mb-3 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=300&h=200&fit=crop&crop=center"
@@ -173,47 +144,19 @@ const HeroSection: React.FC = () => {
               className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
             />
           </div>
-          <Button
-            size="sm"
-            variant="secondary"
-            className={`w-full text-xs ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("sideProducts.discoverNow")}
+          <Button size="sm" variant="secondary" className="w-full text-xs">
+            Discover Now
           </Button>
         </div>
 
         {/* Gaming Card */}
         <div className="bg-gray-100 rounded-md shadow-md p-4 w-56 transition-all duration-300 ease-in-out hover:shadow-xl group cursor-pointer">
-          <div
-            className={`text-lg font-bold mb-1 text-gray-900 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("sideProducts.gaming")}
+          <div className="text-lg font-bold mb-1 text-gray-900">Gaming</div>
+          <div className="text-sm font-medium mb-1 text-gray-700">
+            Hero Black
           </div>
-          <div
-            className={`text-sm font-medium mb-1 text-gray-700 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("sideProducts.hero")} {t("sideProducts.black")}
-          </div>
-          <div
-            className={`text-xs text-gray-600 mb-1 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("product.from")}
-          </div>
-          <div
-            className={`text-xl font-bold text-teal-800 mb-3 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            $169
-          </div>
+          <div className="text-xs text-gray-600 mb-1">From</div>
+          <div className="text-xl font-bold text-teal-800 mb-3">$169</div>
           <div className="relative h-16 mb-3 rounded-lg overflow-hidden bg-gray-200">
             <Image
               src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=300&h=200&fit=crop&crop=center"

@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useToast } from "@/contexts/ToastContext";
 import { AdminLayout } from "@/components/admin/layout";
 import { ProtectedRoute, CategoryForm } from "@/components/admin/ui";
@@ -16,24 +15,22 @@ import { ArrowLeftIcon } from "@/components/ui";
  * Add Category Page - Create new categories
  */
 const AdminAddCategoryPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { showSuccess, showError } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (formData: CategoryFormData) => {
     setLoading(true);
-    
+
     try {
       // Create the category using the mock API
       const newCategory = await createCategory(formData);
-      
+
       showSuccess(
         "Category Created",
         `${newCategory.name} has been created successfully.`
       );
-      
+
       // Redirect to the category detail page
       router.push(`/admin/products/categories/${newCategory.id}`);
     } catch (error) {

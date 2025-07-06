@@ -1,72 +1,44 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import {
-  AdminLayout,
-  ProtectedRoute,
-  DataTable,
-  StatusBadge,
-  PermissionGate,
-} from "@/components/admin";
+import { AdminLayout } from "@/components/admin/layout";
+import { ProtectedRoute, DataTable, StatusBadge } from "@/components/admin/ui";
 import {
   ShoppingBagIcon,
   DollarSignIcon,
-  TrendingUpIcon,
   ClockIcon,
   TruckIcon,
   CheckCircleIcon,
-  XCircleIcon,
   EyeIcon,
-  EditIcon,
-  DownloadIcon,
   SearchIcon,
-  FilterIcon,
-  ArrowPathIcon,
 } from "@/components/ui";
-import {
-  adminOrders,
-  getOrderStats,
-  filterOrders,
-  sortOrders,
-  getUniqueOrderTags,
-  getUniqueOrderSources,
-} from "@/data/admin-orders";
-import type {
-  AdminOrder,
-  OrderFilters,
-  OrderSortOptions,
-} from "@/types/admin-order";
+import { adminOrders, getOrderStats } from "@/data/admin-orders";
+import type { AdminOrder } from "@/types/admin-order";
 
 const AdminOrdersPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
-  const isKhmer = i18n.language === "km";
-  const searchParams = useSearchParams();
-
-  // State
+  // Simple state management
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState<OrderFilters>({
-    status: searchParams.get("status")
-      ? [searchParams.get("status") as any]
-      : [],
-  });
-  const [sortOptions, setSortOptions] = useState<OrderSortOptions>({
-    field: "createdAt",
-    direction: "desc",
-  });
-  const [showFilters, setShowFilters] = useState(false);
 
   // Get order statistics
   const orderStats = useMemo(() => getOrderStats(), []);
 
-  // Apply filters and sorting
-  const filteredAndSortedOrders = useMemo(() => {
-    const searchFilters = { ...filters, search: searchTerm };
-    const filtered = filterOrders(adminOrders, searchFilters);
-    return sortOrders(filtered, sortOptions);
-  }, [searchTerm, filters, sortOptions]);
+  // Simple filtering based on search term
+  const filteredOrders = useMemo(() => {
+    if (!searchTerm) return adminOrders;
+
+    return adminOrders.filter(
+      (order) =>
+        order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.customer.firstName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        order.customer.lastName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        order.customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm]);
 
   // Format price
   const formatPrice = (price: number) => {
@@ -87,171 +59,158 @@ const AdminOrdersPage: React.FC = () => {
     }).format(date);
   };
 
-  // Table columns
+  // Simplified table columns
   const columns = [
     {
       key: "orderNumber",
       label: "Order",
-      sortable: true,
-      render: (value: string, order: AdminOrder) => (
+      render: (order: AdminOrder) => (
         <div>
           <Link
             href={`/admin/orders/${order.id}`}
-            className="font-medium text-gray-900 hover:text-teal-600 transition-colors duration-200 focus-accessible"
+            className="font-medium text-gray-900 hover:text-teal-600"
           >
             {order.orderNumber}
           </Link>
-          <p className="text-sm text-gray-500-accessible">
-            {formatDate(order.createdAt)}
-          </p>
+          <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
         </div>
       ),
     },
     {
       key: "customer",
       label: "Customer",
-      render: (value: any, order: AdminOrder) => (
+      render: (order: AdminOrder) => (
         <div>
           <p className="font-medium text-gray-900">{order.customerName}</p>
-          <p className="text-sm text-gray-500-accessible">
-            {order.customerEmail}
-          </p>
+          <p className="text-sm text-gray-500">{order.customerEmail}</p>
         </div>
       ),
     },
     {
       key: "status",
       label: "Status",
-      sortable: true,
-      render: (value: string) => (
-        <StatusBadge status={value as any} type="order" size="sm" />
-      ),
-    },
-    {
-      key: "paymentStatus",
-      label: "Payment",
-      render: (value: string) => (
-        <StatusBadge status={value as any} type="payment" size="sm" />
-      ),
-    },
-    {
-      key: "fulfillmentStatus",
-      label: "Fulfillment",
-      render: (value: string) => (
-        <StatusBadge status={value as any} type="fulfillment" size="sm" />
+      render: (order: AdminOrder) => (
+        <StatusBadge
+          status={order.status}
+          variant={
+            order.status === "completed"
+              ? "success"
+              : order.status === "pending"
+              ? "warning"
+              : order.status === "cancelled"
+              ? "error"
+              : "default"
+          }
+        />
       ),
     },
     {
       key: "total",
       label: "Total",
-      sortable: true,
-      align: "right",
-      render: (value: number) => (
-        <span className="font-medium text-gray-900">{formatPrice(value)}</span>
-      ),
-    },
-    {
-      key: "items",
-      label: "Items",
-      align: "center",
-      render: (value: any, order: AdminOrder) => (
-        <span className="text-sm text-gray-600-accessible">
-          {order.items.reduce((sum, item) => sum + item.quantity, 0)}
+      render: (order: AdminOrder) => (
+        <span className="font-medium text-gray-900">
+          {formatPrice(order.total)}
         </span>
       ),
     },
     {
       key: "actions",
       label: "Actions",
-      align: "center",
-      render: (value: any, order: AdminOrder) => (
-        <div className="flex items-center justify-center space-x-2">
+      render: (order: AdminOrder) => (
+        <div className="flex items-center space-x-2">
           <Link
             href={`/admin/orders/${order.id}`}
-            className="text-gray-400-accessible hover:text-teal-600 transition-colors duration-200 focus-accessible"
-            title="View Order"
+            className="p-1 text-gray-400 hover:text-teal-600"
+            title="View order"
           >
             <EyeIcon className="w-4 h-4" />
           </Link>
-          <PermissionGate resource="orders" action="update">
-            <Link
-              href={`/admin/orders/${order.id}/edit`}
-              className="text-gray-400-accessible hover:text-blue-600 transition-colors duration-200 focus-accessible"
-              title="Edit Order"
-            >
-              <EditIcon className="w-4 h-4" />
-            </Link>
-          </PermissionGate>
         </div>
       ),
     },
   ];
 
   return (
-    <ProtectedRoute resource="orders" action="read">
-      <AdminLayout
-        title="Order Management"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/admin" },
-          { label: "Orders" },
-        ]}
-        actions={
-          <div className="flex items-center space-x-3">
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700-accessible bg-white hover:bg-gray-50 focus-accessible transition-colors duration-200">
-              <ArrowPathIcon className="w-4 h-4 mr-2" />
-              Refresh
-            </button>
-            <PermissionGate resource="orders" action="read">
-              <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700-accessible bg-white hover:bg-gray-50 focus-accessible transition-colors duration-200">
-                <DownloadIcon className="w-4 h-4 mr-2" />
-                Export
-              </button>
-            </PermissionGate>
-          </div>
-        }
-      >
+    <ProtectedRoute>
+      <AdminLayout>
         <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
+              <p className="text-gray-600">Manage customer orders and track fulfillment</p>
+            </div>
+          </div>
+
           {/* Order Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-md shadow-sm p-6 border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white rounded-md shadow-sm p-6">
               <div className="flex items-center">
                 <ShoppingBagIcon className="w-8 h-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600-accessible font-rubik">
-                    Total Orders
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 font-rubik">
-                    {orderStats.totalOrders}
-                  </p>
-                  <p className="text-sm text-green-600 font-rubik">
-                    +{orderStats.ordersChange}% from last month
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">Total Orders</p>
+                  <p className="text-2xl font-bold text-gray-900">{orderStats.totalOrders}</p>
                 </div>
               </div>
             </div>
-
-            <div className="bg-white rounded-md shadow-sm p-6 border border-gray-200">
+            <div className="bg-white rounded-md shadow-sm p-6">
               <div className="flex items-center">
                 <DollarSignIcon className="w-8 h-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600-accessible font-rubik">
-                    Total Revenue
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 font-rubik">
-                    {formatPrice(orderStats.totalRevenue)}
-                  </p>
-                  <p className="text-sm text-green-600 font-rubik">
-                    +{orderStats.revenueChange}% from last month
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                  <p className="text-2xl font-bold text-gray-900">{formatPrice(orderStats.totalRevenue)}</p>
                 </div>
               </div>
             </div>
-
-            <div className="bg-white rounded-md shadow-sm p-6 border border-gray-200">
+            <div className="bg-white rounded-md shadow-sm p-6">
               <div className="flex items-center">
-                <TrendingUpIcon className="w-8 h-8 text-purple-600" />
+                <ClockIcon className="w-8 h-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600-accessible font-rubik">
+                  <p className="text-sm font-medium text-gray-600">Pending</p>
+                  <p className="text-2xl font-bold text-gray-900">{orderStats.pendingOrders}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-md shadow-sm p-6">
+              <div className="flex items-center">
+                <CheckCircleIcon className="w-8 h-8 text-teal-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Completed</p>
+                  <p className="text-2xl font-bold text-gray-900">{orderStats.completedOrders}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Search and Orders Table */}
+          <div className="bg-white rounded-md shadow-sm p-6">
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="flex-1 relative">
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search orders..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                />
+              </div>
+            </div>
+
+            <DataTable
+              data={filteredOrders}
+              columns={columns}
+              loading={false}
+              emptyMessage="No orders found"
+            />
+          </div>
+        </div>
+      </AdminLayout>
+    </ProtectedRoute>
+  );
+};
+
+export default AdminOrdersPage;
                     Average Order
                   </p>
                   <p className="text-2xl font-bold text-gray-900 font-rubik">

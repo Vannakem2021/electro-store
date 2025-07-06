@@ -2,26 +2,17 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useAdmin } from "@/contexts/AdminContext";
 import { AdminNotification } from "@/types/admin";
 import { mockNotifications } from "@/data/admin";
-import {
-  BellIcon,
-  UserIcon,
-  LogOutIcon,
-  SearchIcon,
-  LanguageToggle,
-} from "@/components/ui";
+import { BellIcon, UserIcon, LogOutIcon, SearchIcon } from "@/components/ui";
 
 interface AdminHeaderProps {
   onSidebarToggle: () => void;
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
   const { user, logout } = useAdmin();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -91,9 +82,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
               <input
                 type="text"
                 placeholder="Search admin..."
-                className={`w-80 px-4 py-2 pl-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 focus:bg-white ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
+                className="w-80 px-4 py-2 pl-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 focus:bg-white"
               />
               <SearchIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
@@ -102,8 +91,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
 
         {/* Right side - Notifications, Language, User menu */}
         <div className="flex items-center space-x-4">
-          {/* Language Toggle */}
-          <LanguageToggle />
+          {/* Language toggle removed - simplified interface */}
 
           {/* Notifications */}
           <div className="relative" ref={notificationRef}>
@@ -123,11 +111,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
             {showNotifications && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg border border-gray-200 z-50">
                 <div className="p-4 border-b border-gray-200">
-                  <h3
-                    className={`text-lg font-semibold text-gray-900 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Notifications
                   </h3>
                 </div>
@@ -153,18 +137,10 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
                             }`}
                           />
                           <div className="flex-1">
-                            <h4
-                              className={`text-sm font-medium text-gray-900 ${
-                                isKhmer ? "font-khmer" : "font-rubik"
-                              }`}
-                            >
+                            <h4 className="text-sm font-medium text-gray-900">
                               {notification.title}
                             </h4>
-                            <p
-                              className={`text-sm text-gray-600 mt-1 ${
-                                isKhmer ? "font-khmer" : "font-rubik"
-                              }`}
-                            >
+                            <p className="text-sm text-gray-600 mt-1">
                               {notification.message}
                             </p>
                             <p className="text-xs text-gray-500 mt-2 font-rubik">
@@ -185,22 +161,14 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
                     ))
                   ) : (
                     <div className="p-4 text-center text-gray-500">
-                      <p
-                        className={`text-sm ${
-                          isKhmer ? "font-khmer" : "font-rubik"
-                        }`}
-                      >
-                        No notifications
-                      </p>
+                      <p className="text-sm">No notifications</p>
                     </div>
                   )}
                 </div>
                 <div className="p-4 border-t border-gray-200">
                   <Link
                     href="/admin/notifications"
-                    className={`text-sm text-teal-600 hover:text-teal-700 font-medium ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
+                    className="text-sm text-teal-600 hover:text-teal-700 font-medium"
                     onClick={() => setShowNotifications(false)}
                   >
                     View all notifications
@@ -228,11 +196,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
                   {user?.lastName.charAt(0)}
                 </div>
               )}
-              <span
-                className={`hidden md:block text-sm font-medium ${
-                  isKhmer ? "font-khmer" : "font-rubik"
-                }`}
-              >
+              <span className="hidden md:block text-sm font-medium">
                 {user?.firstName} {user?.lastName}
               </span>
             </button>
@@ -241,11 +205,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
                 <div className="p-4 border-b border-gray-200">
-                  <p
-                    className={`text-sm font-medium text-gray-900 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
-                  >
+                  <p className="text-sm font-medium text-gray-900">
                     {user?.firstName} {user?.lastName}
                   </p>
                   <p className="text-xs text-gray-500 font-rubik">
@@ -258,9 +218,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
                 <div className="py-2">
                   <Link
                     href="/admin/profile"
-                    className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                     onClick={() => setShowUserMenu(false)}
                   >
                     <UserIcon className="w-4 h-4 mr-3" />
@@ -268,9 +226,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ onSidebarToggle }) => {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className={`w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 ${
-                      isKhmer ? "font-khmer" : "font-rubik"
-                    }`}
+                    className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
                   >
                     <LogOutIcon className="w-4 h-4 mr-3" />
                     Sign Out

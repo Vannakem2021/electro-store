@@ -2,13 +2,11 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { 
-  ExclamationTriangleIcon, 
-  HomeIcon, 
+import {
+  ExclamationTriangleIcon,
+  HomeIcon,
   ArrowPathIcon,
-  ChatBubbleLeftRightIcon 
+  ChatBubbleLeftRightIcon,
 } from "@/components/ui/Icons";
 
 interface ErrorPageProps {
@@ -17,9 +15,6 @@ interface ErrorPageProps {
 }
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ error, reset }) => {
-  const { t } = useTranslation();
-  const { isKhmer } = useLanguage();
-
   useEffect(() => {
     // Log the error to console for debugging
     console.error("Global error:", error);
@@ -53,72 +48,53 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error, reset }) => {
       <div className="max-w-lg w-full text-center">
         <div className="mb-8">
           <ExclamationTriangleIcon className="w-20 h-20 text-red-500 mx-auto mb-6" />
-          <h1
-            className={`text-3xl font-bold text-gray-900 mb-4 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("error.somethingWentWrong")}
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Something went wrong
           </h1>
-          <p
-            className={`text-gray-600 mb-6 ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
-          >
-            {t("error.unexpectedError")}
+          <p className="text-gray-600 mb-6">
+            An unexpected error occurred. Please try again or contact support if
+            the problem persists.
           </p>
         </div>
 
         <div className="space-y-3 mb-8">
           <button
             onClick={handleRetry}
-            className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors duration-200 font-medium ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
+            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors duration-200 font-medium"
           >
             <ArrowPathIcon className="w-5 h-5" />
-            {t("error.tryAgain")}
+            Try Again
           </button>
-          
-          <button
-            onClick={handleGoHome}
-            className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-teal-700 text-teal-700 rounded-md hover:bg-teal-700 hover:text-white transition-colors duration-200 font-medium ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
+
+          <Link
+            href="/"
+            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-teal-700 text-teal-700 rounded-md hover:bg-teal-700 hover:text-white transition-colors duration-200 font-medium"
           >
             <HomeIcon className="w-5 h-5" />
-            {t("error.goHome")}
-          </button>
+            Go Home
+          </Link>
 
           <button
             onClick={handleReportIssue}
-            className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors duration-200 font-medium ${
-              isKhmer ? "font-khmer" : "font-rubik"
-            }`}
+            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors duration-200 font-medium"
           >
             <ChatBubbleLeftRightIcon className="w-5 h-5" />
-            {t("error.reportIssue")}
+            Report Issue
           </button>
         </div>
 
         {/* Error ID for support */}
         {error.digest && (
           <div className="text-xs text-gray-500 mb-4">
-            <p className={isKhmer ? "font-khmer" : "font-rubik"}>
-              {t("error.errorId")}: {error.digest}
-            </p>
+            <p>Error ID: {error.digest}</p>
           </div>
         )}
 
         {/* Development error details */}
         {process.env.NODE_ENV === "development" && (
           <details className="text-left">
-            <summary
-              className={`cursor-pointer text-sm text-gray-500 ${
-                isKhmer ? "font-khmer" : "font-rubik"
-              }`}
-            >
-              {t("error.errorDetails")} (Development)
+            <summary className="cursor-pointer text-sm text-gray-500">
+              Error Details (Development)
             </summary>
             <pre className="mt-2 p-4 bg-gray-100 rounded-md text-xs text-gray-700 overflow-auto">
               {error.message}
@@ -129,8 +105,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error, reset }) => {
 
         {/* Help text */}
         <div className="mt-8 text-sm text-gray-500">
-          <p className={isKhmer ? "font-khmer" : "font-rubik"}>
-            {t("error.persistentIssue")}
+          <p>
+            If this issue persists, please contact our support team at
+            support@elecxo.com
           </p>
         </div>
       </div>
